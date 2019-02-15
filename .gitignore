@@ -1,0 +1,12 @@
+.project
+.settings
+.classpath
+.idea
+.DS_Store
+.externalToolBuilders
+.uml
+target
+bin
+node_modules
+*.log*
+*.iml
