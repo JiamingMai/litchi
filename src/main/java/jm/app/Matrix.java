@@ -52,6 +52,6 @@ public class Matrix {
                 sb.append(String.format("%15f", mat[i][j].doubleValue()));
             }
         }
-        return super.toString();
+        return sb.toString();
     }
 }

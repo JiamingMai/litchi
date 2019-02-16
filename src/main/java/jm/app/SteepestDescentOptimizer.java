@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class SteepestDescentOptimizer implements Optimizer {
 
-    private int epochNum = 10000;
+    private int epochNum = 100000;
 
     private BigDecimal learningRate = new BigDecimal(0.0001);
 
@@ -59,7 +59,7 @@ public class SteepestDescentOptimizer implements Optimizer {
 
         BigDecimal fx = targetFunction.fun(params, args);
         BigDecimal leftDerivative = targetFunction.fun(leftOffsetParams, args).subtract(fx).multiply(new BigDecimal(1.0 / -epsilon.doubleValue()));
-        BigDecimal rightDerivative = targetFunction.fun(leftOffsetParams, args).subtract(fx).multiply(new BigDecimal(1.0 / epsilon.doubleValue()));
+        BigDecimal rightDerivative = targetFunction.fun(rightOffsetParams, args).subtract(fx).multiply(new BigDecimal(1.0 / epsilon.doubleValue()));
         BigDecimal partialDerivative = leftDerivative.add(rightDerivative).multiply(new BigDecimal(0.5));
         return partialDerivative;
     }
