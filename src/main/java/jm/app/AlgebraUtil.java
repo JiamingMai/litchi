@@ -343,4 +343,352 @@ public class AlgebraUtil {
             return null;
         }
     }
+
+    public final static Matrix getRow(Matrix x, int row) {
+        Matrix rowVector = new Matrix(1, x.getColNum());
+        for (int i = 0; i < x.getColNum(); i++) {
+            BigDecimal value = x.getValue(row, i);
+            rowVector.setValue(0, i, value);
+        }
+        return rowVector;
+    }
+
+    public final static Matrix max(Matrix x, int direction) {
+        if (direction == 0) {
+            Matrix maxMat = new Matrix(1, x.getColNum());
+            for (int c = 0; c < x.getColNum(); c++) {
+                BigDecimal maxValue = x.getValue(0, c);
+                for (int r = 0; r < x.getRowNum(); r++) {
+                    BigDecimal value = x.getValue(r, c);
+                    if (value.compareTo(maxValue) > 0) {
+                        maxValue = value;
+                    }
+                }
+                maxMat.setValue(0, c, maxValue);
+            }
+            return maxMat;
+        } else if (direction == 1) {
+            Matrix maxMat = new Matrix(x.getRowNum(), 1);
+            for (int r = 0; r < x.getRowNum(); r++) {
+                BigDecimal maxValue = x.getValue(r, 0);
+                for (int c = 0; c < x.getColNum(); c++) {
+                    BigDecimal value = x.getValue(r, c);
+                    if (value.compareTo(maxValue) > 0) {
+                        maxValue = value;
+                    }
+                }
+                maxMat.setValue(r, 0, maxValue);
+            }
+            return maxMat;
+        } else {
+            return null;
+        }
+    }
+
+    public final static Matrix min(Matrix x, int direction) {
+        if (direction == 0) {
+            Matrix minMat = new Matrix(1, x.getColNum());
+            for (int c = 0; c < x.getColNum(); c++) {
+                BigDecimal minValue = x.getValue(0, c);
+                for (int r = 0; r < x.getRowNum(); r++) {
+                    BigDecimal value = x.getValue(r, c);
+                    if (value.compareTo(minValue) < 0) {
+                        minValue = value;
+                    }
+                }
+                minMat.setValue(0, c, minValue);
+            }
+            return minMat;
+        } else if (direction == 1) {
+            Matrix minMat = new Matrix(x.getRowNum(), 1);
+            for (int r = 0; r < x.getColNum(); r++) {
+                BigDecimal minValue = x.getValue(r, 0);
+                for (int c = 0; c < x.getColNum(); c++) {
+                    BigDecimal value = x.getValue(r, c);
+                    if (value.compareTo(minValue) < 0) {
+                        minValue = value;
+                    }
+                }
+                minMat.setValue(r, 0, minValue);
+            }
+            return minMat;
+        } else {
+            return null;
+        }
+    }
+
+    public final static Matrix copy(Matrix x) {
+        Matrix copiedMat = new Matrix(x.getRowNum(), x.getColNum());
+        for (int i = 0; i < x.getRowNum(); i++) {
+            for (int j = 0; j < x.getColNum(); j++) {
+                BigDecimal value = x.getValue(i, j);
+                copiedMat.setValue(i, j, value);
+            }
+        }
+        return copiedMat;
+    }
+
+    public final static Matrix setColumnVector(Matrix x, int column, Matrix columnVector) {
+        Matrix newMat = copy(x);
+        for (int r = 0; r < x.getRowNum(); r++) {
+            BigDecimal value = columnVector.getValue(r, 0);
+            newMat.setValue(r, column, value);
+        }
+        return newMat;
+    }
+
+    public final static Matrix getColumnVector(Matrix x, int column) {
+        Matrix columnVector = new Matrix(x.getRowNum(), 1);
+        for (int r = 0; r < x.getRowNum(); r++) {
+            BigDecimal value = x.getValue(r, column);
+            columnVector.setValue(r, 0, value);
+        }
+        return columnVector;
+    }
+
+    public final static Matrix setRowVector(Matrix x, int row, Matrix rowVector) {
+        Matrix newMat = copy(x);
+        for (int c = 0; c < x.getColNum(); c++) {
+            BigDecimal value = rowVector.getValue(0, c);
+            newMat.setValue(row, c, value);
+        }
+        return newMat;
+    }
+
+    public final static Matrix getRowVector(Matrix x, int row) {
+        Matrix rowVector = new Matrix(1, x.getColNum());
+        for (int c = 0; c < x.getColNum(); c++) {
+            BigDecimal value = x.getValue(row, c);
+            rowVector.setValue(0, c, value);
+        }
+        return rowVector;
+    }
+
+    public final static Matrix normalize(Matrix x, int direction) {
+        if (direction == 0) {
+            Matrix maxMat = AlgebraUtil.max(x, 0);
+            Matrix minMat = AlgebraUtil.min(x, 0);
+            Matrix normalizedMat = new Matrix(x.getRowNum(), x.getColNum());
+            for (int c = 0; c < x.getColNum(); c++) {
+                Matrix columnVector = getColumnVector(normalizeColumn(x, c, maxMat.getValue(0, c), minMat.getValue(0, c)), c);
+                normalizedMat = setColumnVector(normalizedMat, c, columnVector);
+            }
+            return normalizedMat;
+        } else if (direction == 1) {
+            Matrix maxMat = AlgebraUtil.max(x, 1);
+            Matrix minMat = AlgebraUtil.min(x, 1);
+            Matrix normalizedMat = new Matrix(x.getRowNum(), x.getColNum());
+            for (int r = 0; r < x.getRowNum(); r++) {
+                Matrix rowVector = getRowVector(normalizeRow(x, r, maxMat.getValue(r, 0), minMat.getValue(r, 0)), r);
+                normalizedMat = setRowVector(normalizedMat, r, rowVector);
+            }
+            return normalizedMat;
+        } else {
+            return null;
+        }
+    }
+
+    private final static Matrix normalizeRow(Matrix x, int row, BigDecimal maxValue, BigDecimal minValue) {
+        Matrix newMat = new Matrix(x.getRowNum(), x.getColNum());
+        BigDecimal width = maxValue.subtract(minValue);
+        for (int c = 0; c < x.getColNum(); c++) {
+            BigDecimal newValue = x.getValue(row, c).subtract(minValue).multiply(new BigDecimal(1.0 / width.doubleValue()));
+            newMat.setValue(row, c, newValue);
+        }
+        return newMat;
+    }
+
+    private final static Matrix normalizeColumn(Matrix x, int column, BigDecimal maxValue, BigDecimal minValue) {
+        Matrix newMat = new Matrix(x.getRowNum(), x.getColNum());
+        BigDecimal width = maxValue.subtract(minValue);
+        for (int r = 0; r < x.getRowNum(); r++) {
+            BigDecimal newValue = x.getValue(r, column).subtract(minValue).multiply(new BigDecimal(1.0 / width.doubleValue()));
+            newMat.setValue(r, column, newValue);
+        }
+        return newMat;
+    }
+
+    public final static BigDecimal calcEuclideanDistance(Matrix mat1, Matrix mat2) {
+        BigDecimal sum = new BigDecimal(0.0);
+        for (int c = 0; c < mat1.getColNum(); c++) {
+            BigDecimal x = mat1.getValue(0, c);
+            BigDecimal y = mat2.getValue(0, c);
+            sum = sum.add(x.subtract(y).multiply(x.subtract(y)));
+        }
+        BigDecimal distance = new BigDecimal(Math.sqrt(sum.doubleValue()));
+        return distance;
+    }
+
+    public final static Matrix getSubMatrix(Matrix mat, int rowStart, int rowEnd, int columnStart, int columnEnd) {
+        Matrix subMat = new Matrix(rowEnd - rowStart + 1, columnEnd - columnStart + 1);
+        for (int r = rowStart; r <= rowEnd; r++) {
+            for (int c = columnStart; c <= columnEnd; c++) {
+                BigDecimal value = mat.getValue(r, c);
+                subMat.setValue(r - rowStart, c - columnStart, value);
+            }
+        }
+        return subMat;
+    }
+
+    public final static Matrix mergeMatrix(Matrix mat1, Matrix mat2, int direction) {
+        // TODO: do validation for the row number and the column number of mat1 and mat2 here
+        if (direction == 0) {
+            Matrix mergedMat = new Matrix(mat1.getRowNum() + mat2.getRowNum(), mat1.getColNum());
+            // copy data from mat1
+            for (int r = 0; r < mat1.getRowNum(); r++) {
+                for (int c = 0; c < mat1.getColNum(); c++) {
+                    BigDecimal value = mat1.getValue(r, c);
+                    mergedMat.setValue(r, c, value);
+                }
+            }
+
+            // copy data from mat2
+            for (int r = 0; r < mat2.getRowNum(); r++) {
+                for (int c = 0; c < mat2.getColNum(); c++) {
+                    BigDecimal value = mat2.getValue(r, c);
+                    mergedMat.setValue(r + mat1.getRowNum(), c, value);
+                }
+            }
+            return mergedMat;
+        } else if (direction == 1) {
+            Matrix mergedMat = new Matrix(mat1.getRowNum(), mat1.getColNum() + mat2.getColNum());
+            // copy data from mat1
+            for (int r = 0; r < mat1.getRowNum(); r++) {
+                for (int c = 0; c < mat1.getColNum(); c++) {
+                    BigDecimal value = mat1.getValue(r, c);
+                    mergedMat.setValue(r, c, value);
+                }
+            }
+
+            // copy data from mat2
+            for (int r = 0; r < mat2.getRowNum(); r++) {
+                for (int c = 0; c < mat2.getColNum(); c++) {
+                    BigDecimal value = mat2.getValue(r, c);
+                    mergedMat.setValue(r, c + mat1.getColNum(), value);
+                }
+            }
+            return mergedMat;
+        } else {
+            return null;
+        }
+    }
+
+    public final static Matrix unitize(Matrix x) {
+        if (x.getColNum() == 1) {
+            Matrix unitizedVector = new Matrix(x.getRowNum(), x.getColNum());
+            int elementNum = x.getRowNum();
+            BigDecimal denominator = l2Norm(x);
+            for (int i = 0; i < elementNum; i++) {
+                BigDecimal value = x.getValue(i, 0);
+                BigDecimal unitizedValue = value.multiply(new BigDecimal(1.0 / denominator.doubleValue()));
+                unitizedVector.setValue(i, 0, unitizedValue);
+            }
+            return unitizedVector;
+        } else if (x.getRowNum() == 1) {
+            Matrix unitizedVector = new Matrix(x.getRowNum(), x.getColNum());
+            int elementNum = x.getRowNum();
+            BigDecimal denominator = l2Norm(x);
+            for (int i = 0; i < elementNum; i++) {
+                BigDecimal value = x.getValue(0, i);
+                BigDecimal unitzedValue = value.multiply(new BigDecimal(1.0 / denominator.doubleValue()));
+                unitizedVector.setValue(i, 0, unitzedValue);
+            }
+            return unitizedVector;
+        } else {
+            return null;
+        }
+    }
+
+    public final static BigDecimal l2Norm(Matrix x) {
+        if (x.getColNum() == 1) {
+            int elementNum = x.getRowNum();
+            BigDecimal sum = new BigDecimal(0.0);
+            for (int i = 0; i < elementNum; i++) {
+                BigDecimal value = x.getValue(i, 0);
+                sum = sum.add(value.multiply(value));
+            }
+            BigDecimal l2Value = new BigDecimal(Math.sqrt(sum.doubleValue()));
+            return l2Value;
+        } else if (x.getRowNum() == 1) {
+            int elementNum = x.getColNum();
+            BigDecimal sum = new BigDecimal(0.0);
+            for (int i = 0; i < elementNum; i++) {
+                BigDecimal value = x.getValue(0, i);
+                sum = sum.add(value.multiply(value));
+            }
+            BigDecimal l2Value = new BigDecimal(Math.sqrt(sum.doubleValue()));
+            return l2Value;
+        } else {
+            return null;
+        }
+    }
+
+    public final static BigDecimal inner(Matrix a, Matrix b) {
+        if (a.getColNum() == 1 && b.getColNum() == 1) {
+            return multiply(transpose(a), b).getValue(0, 0);
+        } else if (a.getColNum() == 1 && b.getRowNum() == 1) {
+            return multiply(transpose(a), transpose(b)).getValue(0, 0);
+        } else if (a.getRowNum() == 1 && b.getColNum() == 1) {
+            return multiply(a, b).getValue(0, 0);
+        } else if (a.getRowNum() == 1 && b.getRowNum() == 1) {
+            return multiply(a, transpose(b)).getValue(0, 0);
+        } else {
+            return null;
+        }
+    }
+
+    public final static Matrix orthogonalize(Matrix a) {
+        int dimension = a.getRowNum();
+        int vectorNum = a.getColNum();
+        Matrix b = new Matrix(dimension, vectorNum);
+        for (int i = 0; i < vectorNum; i++) {
+            Matrix ai = getColumnVector(a, i);
+            Matrix bi = copy(ai);
+            for (int j = 0; j < i; j++) {
+                Matrix bj = getColumnVector(b, j);
+                BigDecimal coefficient = inner(bj, ai).multiply(new BigDecimal(1.0 / inner(bj, bj).doubleValue()));
+                bi = subtract(bi, dot(bj, coefficient));
+            }
+            b = setColumnVector(b, i, bi);
+        }
+
+        // unitization
+        for (int i = 0; i < vectorNum; i++) {
+            b = setColumnVector(b, i, unitize(getColumnVector(b, i)));
+        }
+        return b;
+    }
+
+    public final static Matrix[] qrFactorize(Matrix a) {
+        Matrix q = orthogonalize(a);
+        Matrix r = multiply(transpose(q), a);
+        Matrix[] qr = new Matrix[2];
+        qr[0] = q;
+        qr[1] = r;
+        return qr;
+    }
+
+    public final static Matrix[] eigen(Matrix a) {
+        Matrix eigenvalues = copy(a);
+        for (int i = 0; i < 20; i++) {
+            Matrix[] qr = qrFactorize(eigenvalues);
+            Matrix q = qr[0];
+            Matrix r = qr[1];
+            eigenvalues = multiply(r, q);
+        }
+        for (int i = 0; i < eigenvalues.getRowNum(); i++) {
+            for (int j = 0; j < eigenvalues.getColNum(); j++) {
+                if (i != j) {
+                    eigenvalues.setValue(i, j, 0.0);
+                }
+            }
+        }
+
+        // TODO: the returned eigenvectors and eigenvalues are not corresponding yet
+        Matrix eigenvectors = inverse(subtract(a, eigenvalues));
+        Matrix[] valuesAndVectors = new Matrix[2];
+        valuesAndVectors[0] = eigenvalues;
+        valuesAndVectors[1] = eigenvectors;
+        return valuesAndVectors;
+    }
 }
