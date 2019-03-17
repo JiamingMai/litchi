@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class GeneticAlgorithmOptimizer implements Optimizer {
 
-    private final int SEED_NUM = 5;
+    private final int SEED_NUM = 100;
 
     private final double CROSSOVER_PROBABILITY = 0.88;
 
@@ -16,6 +16,15 @@ public class GeneticAlgorithmOptimizer implements Optimizer {
     private int epochNum = 10000;
 
     private Matrix boundaries;
+
+    public GeneticAlgorithmOptimizer(Matrix boundaries) {
+        this.boundaries = boundaries;
+    }
+
+    public GeneticAlgorithmOptimizer(Matrix boundaries, int epochNum) {
+        this.boundaries = boundaries;
+        this.epochNum = epochNum;
+    }
 
     @Override
     public Matrix optimize(TargetFunction fun, Matrix params, Matrix args) {
@@ -181,6 +190,13 @@ public class GeneticAlgorithmOptimizer implements Optimizer {
         }
 
         // do crossover
+        for (int i = 0; i < selectedIndices.size(); i += 2) {
+            Matrix newItems = cross(AlgebraUtil.getRowVector(paramsPopulation, i), AlgebraUtil.getRowVector(paramsPopulation, i + 1), paramsNum);
+            newPopulation = AlgebraUtil.setRowVector(newPopulation, i, AlgebraUtil.getRowVector(newItems, 0));
+            newPopulation = AlgebraUtil.setRowVector(newPopulation, i + 1, AlgebraUtil.getRowVector(newItems, 1));
+        }
+
+        // reserve the items that do not cross
         for (int i = selectedIndices.size(); i < SEED_NUM; i++) {
             newPopulation = AlgebraUtil.setRowVector(newPopulation, i, AlgebraUtil.getRowVector(paramsPopulation, i));
         }
