@@ -132,7 +132,7 @@ public class AlgebraUtil {
             permutation[startIndex] = permutation[i];
             permutation[i] = tempValue;
 
-            permutations.add(calcFullPermutation(permutations, permutation, startIndex));
+            permutations.add(calcFullPermutation(permutations, permutation, startIndex + 1));
 
             tempValue = permutation[startIndex];
             permutation[startIndex] = permutation[i];
@@ -249,14 +249,14 @@ public class AlgebraUtil {
                 }
                 if (j == col - 1) {
                     colFlag++;
-                    break;
+                    continue;
                 }
                 BigDecimal value = mat.getValue(i, j);
                 newMat.setValue(i - rowFlag, j - colFlag, value);
             }
         }
         BigDecimal cofactor = determinant(newMat);
-        cofactor = new BigDecimal(Math.pow(-1, (row + col) * cofactor.doubleValue()));
+        cofactor = new BigDecimal(Math.pow(-1, (row + col)) * cofactor.doubleValue());
         return cofactor;
     }
 

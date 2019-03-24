@@ -9,7 +9,7 @@ public class LinearModel implements BasicModel {
         Matrix newX = convertToMatrixWithX0(x);
         Matrix newXT = AlgebraUtil.transpose(newX);
         Matrix params = AlgebraUtil.multiply(AlgebraUtil.multiply(AlgebraUtil.inverse(AlgebraUtil.multiply(newXT, newX)), newXT), y);
-        return null;
+        return params;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class LinearModel implements BasicModel {
         Matrix newX = new Matrix(x.getRowNum(), x.getColNum() + 1);
         for (int i = 1; i < newX.getColNum(); i++) {
             for (int j = 0; j < newX.getRowNum(); j++) {
-                BigDecimal value = new BigDecimal(x.getValue(j, j - 1).doubleValue());
+                BigDecimal value = new BigDecimal(x.getValue(j, i - 1).doubleValue());
                 newX.setValue(j, i, value);
             }
         }
