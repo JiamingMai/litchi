@@ -4,10 +4,9 @@ import java.math.BigDecimal;
 
 public class Test {
     public static void main(String[] args) {
-        BigDecimal a = new BigDecimal(1.1);
-        BigDecimal b = a;
-        a = null;
-        System.out.println(b);
-        System.out.println(a);
+        int rowNum = 100;
+        for (int i = 1; i <= rowNum; i++) {
+            System.out.println(i);
+        }
     }
 }
