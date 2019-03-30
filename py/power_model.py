@@ -17,8 +17,6 @@ def calc_value(x, params):
     a = params[0][0]
     lna = np.log(a)
     params[0][0] = lna
-    lny = py.linear_model.calc_value(lnx, lna)
+    lny = py.linear_model.calc_value(lnx, params)
     y = np.exp(lny)
     return y
-
-
