@@ -1,7 +1,6 @@
 package jm.app;
 
 import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,7 +21,7 @@ public class KMeansModelTest {
             double profit_amt = Double.parseDouble(fields[1]);
             double price = Double.parseDouble(fields[2]);
             x.setValue(i, 0, new BigDecimal(profit_amt));
-            x.setValue(i, 0, new BigDecimal(price));
+            x.setValue(i, 1, new BigDecimal(price));
             i++;
         }
         KMeansModel kMeansModel = new KMeansModel();
