@@ -11,7 +11,7 @@ public class KMeansModelTest {
 
     @Test
     public void testKMeansModel() throws Exception {
-        String rootPath = KMeansModelTest.class.getClassLoader().getResource("").getPath();
+        String rootPath = this.getClass().getResource("").getPath() + "../../";
         String fileName = "cluster_test_data.csv";
         Scanner scanner = new Scanner(new File(rootPath, fileName));
         Matrix x = new Matrix(259, 2);
