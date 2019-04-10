@@ -36,6 +36,21 @@ public class AlgebraUtil {
         return resultMat;
     }
 
+    public final static Matrix multiply(Matrix a, BigDecimal b) {
+        if (a == null || b == null) {
+            return null;
+        }
+        Matrix resultMat = new Matrix(a.getRowNum(), a.getColNum());
+        for (int i = 0; i < resultMat.getRowNum(); i++) {
+            for (int j = 0; j < resultMat.getColNum(); j++) {
+                BigDecimal value = a.getValue(i, j).multiply(b);
+                resultMat.setValue(i, j, value);
+            }
+        }
+        return resultMat;
+    }
+
+
     public final static Matrix add(Matrix a, Matrix b) {
         if (a == null || b == null) {
             return null;
