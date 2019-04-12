@@ -1,23 +1,20 @@
 package jm.app;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class GmmModel {
 
     public Map<Integer, List<Integer>> cluster(Matrix featureMat, int k, int epochNum) {
         int dimension = featureMat.getColNum();
         // Step 1. Normalize the input
-        Matrix dataPoints = AlgebraUtil.normalize(featureMat, 0);
+        Matrix x = AlgebraUtil.normalize(featureMat, 0);
 
         // Step 2. dispatch the data to random cluster
         Random random = new Random();
         List<Matrix>[] clusters = new List[k];
-        for (int i = 0; i < featureMat.getRowNum(); i++) {
-            Matrix xi = AlgebraUtil.getRowVector(featureMat, i);
+        for (int i = 0; i < x.getRowNum(); i++) {
+            Matrix xi = AlgebraUtil.getRowVector(x, i);
             int clazzIndex = random.nextInt(k);
             if (null == clusters[clazzIndex]) {
                 clusters[clazzIndex] = new ArrayList<>();
@@ -42,13 +39,62 @@ public class GmmModel {
 
         // Step 4. update the gaussian components
         for (int e = 0; e < epochNum; e++) {
-
+            // initialize new u and sigma
+            Matrix[] newU = new Matrix[k];
+            Matrix[] newSigma = new Matrix[k];
             for (int i = 0; i < k; i++) {
-
-
+                newU[i] = new Matrix(1, dimension);
+                newSigma[i] = new Matrix(dimension, dimension);
             }
+            for (int c = 0; c < k; c++) {
+                // update u and sigma for the cth cluster with EM algorithm
+                BigDecimal nc = new BigDecimal(0.0);
+                for (int i = 0; i < x.getRowNum(); i++) {
+                    BigDecimal pi = new BigDecimal(0.0);
+                    for (int s = 0; s < k; s++) {
+                        Matrix xs = AlgebraUtil.getColumnVector(x, s);
+                        pi = pi.add(gaussianFunction(xs, u[c], sigma[c]));
+                    }
+                    Matrix xi = AlgebraUtil.getColumnVector(x, i);
+                    BigDecimal pic = gaussianFunction(xi, u[c], sigma[c]).multiply(new BigDecimal(1.0 / pi.doubleValue()));
+                    newU[c] = AlgebraUtil.add(newU[c], AlgebraUtil.multiply(xi, pic));
+                    Matrix xiSubtractUc = AlgebraUtil.subtract(xi, u[c]);
+                    Matrix transXiSubtractUc = AlgebraUtil.transpose(xiSubtractUc);
+                    newSigma[c] = AlgebraUtil.add(newSigma[c], AlgebraUtil.multiply(AlgebraUtil.multiply(transXiSubtractUc, xiSubtractUc), pic));
+                    nc = nc.add(pic);
+                }
+                System.out.format("cluster #%d have %d samples", c, nc);
+                newU[c] = AlgebraUtil.multiply(newU[c], new BigDecimal(1.0 / nc.doubleValue()));
+                newSigma[c] = AlgebraUtil.multiply(newSigma[c], new BigDecimal(1.0 / nc.doubleValue()));
+            }
+            u = newU;
+            sigma = newSigma;
         }
-        return null;
+        System.out.println(u);
+        return cluster(x, u, sigma);
+    }
+
+    private Map<Integer, List<Integer>> cluster(Matrix x, Matrix[] u, Matrix[] sigma) {
+        int k = u.length;
+        Map<Integer, List<Integer>> clusteredResult = new HashMap<>();
+        for (int i = 0; i < x.getRowNum(); i++) {
+            Matrix xi = AlgebraUtil.getRowVector(x, i);
+            BigDecimal maxP = new BigDecimal(Double.MIN_VALUE);
+            int bestClazz = -1;
+            for (int c = 0; c < k; c++) {
+                BigDecimal pic = gaussianFunction(xi, u[c], sigma[c]);
+                if (pic.compareTo(maxP) > 0) {
+                    maxP = pic;
+                    bestClazz = c;
+                }
+            }
+            List<Integer> elementsInClazz = clusteredResult.get(bestClazz);
+            if (null == elementsInClazz) {
+                elementsInClazz = new ArrayList<>();
+            }
+            elementsInClazz.add(i);
+        }
+        return clusteredResult;
     }
 
     public BigDecimal gaussianFunction(Matrix x, Matrix u, Matrix sigma) {
