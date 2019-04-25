@@ -15,6 +15,7 @@ public class Matrix {
         this.rowNum = rowNum;
         this.colNum = colNum;
         mat = new BigDecimal[rowNum][colNum];
+        initializeMatrix();
     }
 
     private void initializeMatrix() {

@@ -36,9 +36,20 @@ public class GmmModel {
             }
             u[i] = AlgebraUtil.multiply(u[i], new BigDecimal(1.0 / ci.size()));
         }
+        for (int i = 0; i < k; i++) {
+            List<Matrix> ci = clusters[i];
+            for (Matrix xCi : ci) {
+                Matrix xiSubtractUc = AlgebraUtil.subtract(xCi, u[i]);
+                Matrix transXiSubtractUc = AlgebraUtil.transpose(xiSubtractUc);
+                sigma[i] = AlgebraUtil.add(sigma[i], AlgebraUtil.multiply(transXiSubtractUc, xiSubtractUc));
+            }
+            u[i] = AlgebraUtil.multiply(u[i], new BigDecimal(1.0 / ci.size()));
+            sigma[i] = AlgebraUtil.multiply(sigma[i], new BigDecimal(1.0 / ci.size()));
+        }
 
         // Step 4. update the gaussian components
         for (int e = 0; e < epochNum; e++) {
+            System.out.format("==== Epoch #%d ====\n", e);
             // initialize new u and sigma
             Matrix[] newU = new Matrix[k];
             Matrix[] newSigma = new Matrix[k];
@@ -52,10 +63,10 @@ public class GmmModel {
                 for (int i = 0; i < x.getRowNum(); i++) {
                     BigDecimal pi = new BigDecimal(0.0);
                     for (int s = 0; s < k; s++) {
-                        Matrix xs = AlgebraUtil.getColumnVector(x, s);
-                        pi = pi.add(gaussianFunction(xs, u[c], sigma[c]));
+                        Matrix xi = AlgebraUtil.getRowVector(x, i);
+                        pi = pi.add(gaussianFunction(xi, u[s], sigma[s]));
                     }
-                    Matrix xi = AlgebraUtil.getColumnVector(x, i);
+                    Matrix xi = AlgebraUtil.getRowVector(x, i);
                     BigDecimal pic = gaussianFunction(xi, u[c], sigma[c]).multiply(new BigDecimal(1.0 / pi.doubleValue()));
                     newU[c] = AlgebraUtil.add(newU[c], AlgebraUtil.multiply(xi, pic));
                     Matrix xiSubtractUc = AlgebraUtil.subtract(xi, u[c]);
@@ -63,12 +74,14 @@ public class GmmModel {
                     newSigma[c] = AlgebraUtil.add(newSigma[c], AlgebraUtil.multiply(AlgebraUtil.multiply(transXiSubtractUc, xiSubtractUc), pic));
                     nc = nc.add(pic);
                 }
-                System.out.format("cluster #%d have %d samples", c, nc);
+                System.out.format("cluster #%d have %d samples\n", c, (int) nc.doubleValue());
                 newU[c] = AlgebraUtil.multiply(newU[c], new BigDecimal(1.0 / nc.doubleValue()));
                 newSigma[c] = AlgebraUtil.multiply(newSigma[c], new BigDecimal(1.0 / nc.doubleValue()));
             }
             u = newU;
             sigma = newSigma;
+            System.out.println("===================");
+            System.out.println();
         }
         System.out.println(u);
         return cluster(x, u, sigma);
@@ -93,11 +106,20 @@ public class GmmModel {
                 elementsInClazz = new ArrayList<>();
             }
             elementsInClazz.add(i);
+            clusteredResult.put(bestClazz, elementsInClazz);
         }
         return clusteredResult;
     }
 
-    public BigDecimal gaussianFunction(Matrix x, Matrix u, Matrix sigma) {
+    public BigDecimal gaussianFunction(Matrix inputX, Matrix inputU, Matrix sigma) {
+        Matrix x = inputX;
+        Matrix u = inputU;
+        if (sigma.getRowNum() != x.getRowNum()) {
+            x = AlgebraUtil.transpose(x);
+        }
+        if (sigma.getRowNum() != u.getRowNum()) {
+            u = AlgebraUtil.transpose(u);
+        }
         int d = x.getRowNum();
         double leftTerm = 1.0 / (Math.pow(2 * Math.PI, d / 2.0) * Math.sqrt(AlgebraUtil.determinant(sigma).doubleValue()));
         double rightTerm = Math.exp(-0.5 * AlgebraUtil.multiply(AlgebraUtil.multiply(
