@@ -38,11 +38,17 @@ public class GmmModel {
                 u[i] = AlgebraUtil.add(u[i], xCi);
             }
             u[i] = AlgebraUtil.multiply(u[i], new BigDecimal(1.0 / ci.size()));
+            Matrix combinedCi = new Matrix(ci.size(), dimension);
+            for (int r = 0; r < ci.size(); r++) {
+                for (int c = 0; c < dimension; c++) {
+                    combinedCi.setValue(r, c, ci.get(r).getValue(0, c));
+                }
+            }
+            sigma[i] = AlgebraUtil.covariance(combinedCi);
         }
 
         // Step 4. update the gaussian components
         for (int e = 0; e < epochNum; e++) {
-
             for (int i = 0; i < k; i++) {
 
 
