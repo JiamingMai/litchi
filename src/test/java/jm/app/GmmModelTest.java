@@ -27,7 +27,7 @@ public class GmmModelTest {
             i++;
         }
         GmmModel gmmModel = new GmmModel();
-        Map<Integer, List<Integer>> clusterToDataPointIndices = gmmModel.cluster(x, 3, 10);
+        Map<Integer, List<Integer>> clusterToDataPointIndices = gmmModel.cluster(x, 3, 100);
         System.out.println(clusterToDataPointIndices);
     }
 

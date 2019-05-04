@@ -25,7 +25,7 @@ public class KMeansModelTest {
             i++;
         }
         KMeansModel kMeansModel = new KMeansModel();
-        Map<Integer, List<Integer>> clusterToDataPointIndices = kMeansModel.calcCentralPoints(x, 3, 100);
+        Map<Integer, List<Integer>> clusterToDataPointIndices = kMeansModel.cluster(x, 3, 100);
         System.out.println(clusterToDataPointIndices);
     }
 }

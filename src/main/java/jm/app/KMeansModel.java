@@ -5,7 +5,7 @@ import java.util.*;
 
 public class KMeansModel {
 
-    public Map<Integer, List<Integer>> calcCentralPoints(Matrix featureMat, int k, int epochNum) {
+    public Map<Integer, List<Integer>> cluster(Matrix featureMat, int k, int epochNum) {
         // Step 1. Normalize the input
         Matrix dataPoints = AlgebraUtil.normalize(featureMat, 0);
 
