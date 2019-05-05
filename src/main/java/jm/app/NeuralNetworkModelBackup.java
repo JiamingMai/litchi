@@ -2,37 +2,29 @@ package jm.app;
 
 import java.util.Random;
 
-public class NeuralNetworkModel {
-
-    private Double[][][] weights;
-
-    private Double[][] biases;
-
-    private Double[][] outputMat;
-
-    private double lambda = 0.1;
-
-    private int epochNum = 100000;
-
-    private final double RANDOM_COEFFIENCE = 1.0;
-
+public class NeuralNetworkModelBackup {
+    Double[][][] weights;
+    Double[][] biases;
+    Double[][] outputMat;
+    double lambda = 0.1;
+    int epoch = 100000;
+    final double RANDOM_COEFFIENCE = 1.0;
     ActivationFunction activationFunction = ActivationFunction.SIGMOID;
-
 
     public double getLambda() {
         return lambda;
     }
 
-    public int getEpochNum() {
-        return epochNum;
-    }
-
-    public void setEpochNum(int epochNum) {
-        this.epochNum = epochNum;
-    }
-
     public void setLambda(double lambda) {
         this.lambda = lambda;
+    }
+
+    public int getEpoch() {
+        return epoch;
+    }
+
+    public void setEpoch(int epoch) {
+        this.epoch = epoch;
     }
 
     public void setWeitghts(Double[][][] weights) {
@@ -43,7 +35,7 @@ public class NeuralNetworkModel {
         this.biases = biases;
     }
 
-    public NeuralNetworkModel(int... numOfEachLayer) {
+    public NeuralNetworkModelBackup(int... numOfEachLayer) {
         biases = new Double[numOfEachLayer.length - 1][];
         for (int i = 0; i < biases.length; i++) {
             biases[i] = new Double[numOfEachLayer[i + 1]];
@@ -87,12 +79,8 @@ public class NeuralNetworkModel {
         }
     }
 
-    public void train(Matrix input, Matrix label) {
-        // TODO: implement this method with Matrix type
-    }
-
     public void train(double[][] input, double[][] label) {
-        for (int i = 0; i < epochNum; i++) {
+        for (int i = 0; i < epoch; i++) {
             for (int sampleNo = 0; sampleNo < input.length; sampleNo++) {
                 double[][] sensitivity = estSensitivity(input, label, sampleNo);
                 updateWeights(sensitivity);

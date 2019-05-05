@@ -36,8 +36,6 @@ def cluster(x, k, epoch_num):
             new_sigma.append(new_sigma_i)
         u = new_u
         sigma = new_sigma
-        print(u)
-        print()
     return u, sigma
 
 
