@@ -2,6 +2,7 @@ package jm.app;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -184,21 +185,27 @@ public class GeneticAlgorithmOptimizer implements Optimizer {
                 selectedIndices.add(i);
             }
         }
+
+        // drop the single one to guarantee that the number of selected indices is even
         if (selectedIndices.size() % 2 != 0) {
-            int reservedItemIndex = selectedIndices.remove(selectedIndices.size() - 1);
-            newPopulation = AlgebraUtil.setRowVector(newPopulation, SEED_NUM - 1, AlgebraUtil.getRowVector(paramsPopulation, reservedItemIndex));
+            selectedIndices.remove(selectedIndices.size() - 1);
         }
 
         // do crossover
-        for (int i = 0; i < selectedIndices.size(); i += 2) {
-            Matrix newItems = cross(AlgebraUtil.getRowVector(paramsPopulation, i), AlgebraUtil.getRowVector(paramsPopulation, i + 1), paramsNum);
+        Iterator<Integer> it = selectedIndices.iterator();
+        while(it.hasNext()) {
+            int i = it.next();
+            int j = it.next();
+            Matrix newItems = cross(AlgebraUtil.getRowVector(paramsPopulation, i), AlgebraUtil.getRowVector(paramsPopulation, j), paramsNum);
             newPopulation = AlgebraUtil.setRowVector(newPopulation, i, AlgebraUtil.getRowVector(newItems, 0));
-            newPopulation = AlgebraUtil.setRowVector(newPopulation, i + 1, AlgebraUtil.getRowVector(newItems, 1));
+            newPopulation = AlgebraUtil.setRowVector(newPopulation, j, AlgebraUtil.getRowVector(newItems, 1));
         }
 
         // reserve the items that do not cross
-        for (int i = selectedIndices.size(); i < SEED_NUM; i++) {
-            newPopulation = AlgebraUtil.setRowVector(newPopulation, i, AlgebraUtil.getRowVector(paramsPopulation, i));
+        for (int i = 0; i < SEED_NUM; i++) {
+            if (!selectedIndices.contains(i)) {
+                newPopulation = AlgebraUtil.setRowVector(newPopulation, i, AlgebraUtil.getRowVector(paramsPopulation, i));
+            }
         }
         return newPopulation;
     }

@@ -18,7 +18,6 @@ public class NeuralNetworkModel {
 
     ActivationFunction activationFunction = ActivationFunction.SIGMOID;
 
-
     public double getLambda() {
         return lambda;
     }
