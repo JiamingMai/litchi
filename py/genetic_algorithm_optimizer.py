@@ -15,16 +15,16 @@ class GeneticAlgorithmOptimizer(opt.Optimizer):
         self.mutation_probability = mutation_probability
 
     def denormalize_params(self, params):
-        params_num = params.shape[1]
+        params_num = len(params)
         denormalized_params = np.array(params)
         for i in range(params_num):
             min_boundary = self.boundaries[i, 0]
             max_boundary = self.boundaries[i, 1]
-            new_value = np.multiply(params[0, i], max_boundary - min_boundary) + min_boundary
-            denormalized_params[0, i] = new_value
+            new_value = np.multiply(params[i], max_boundary - min_boundary) + min_boundary
+            denormalized_params[i] = new_value
         return denormalized_params
 
-    def select_operator(self, loss_function, params_population, args):
+    def selection_operator(self, loss_function, params_population, args):
         params_num = params_population.shape[1]
         ratios = np.random.rand(self.seed_num)
         fitness_values = np.random.rand(self.seed_num)
@@ -66,7 +66,7 @@ class GeneticAlgorithmOptimizer(opt.Optimizer):
 
         # select the items that can do crossover
         selected_indices = []
-        for i in self.seed_num:
+        for i in range(self.seed_num):
             if np.random.rand() < self.crossover_probability:
                 selected_indices.append(i)
         selected_indices = np.array(selected_indices)
@@ -91,15 +91,15 @@ class GeneticAlgorithmOptimizer(opt.Optimizer):
 
         # generate the first one
         for i in range(cross_bits):
-            new_items[0, i] = item1[0, i]
+            new_items[0, i] = item1[i]
         for i in range(cross_bits + 1, bit_num):
-            new_items[0, i] = item2[0, i]
+            new_items[0, i] = item2[i]
 
         # generate the second one
         for i in range(cross_bits):
-            new_items[1, i] = item2[0, i]
+            new_items[1, i] = item2[i]
         for i in range(cross_bits + 1, bit_num):
-            new_items[1, i] = item1[0, i]
+            new_items[1, i] = item1[i]
 
         return new_items
 
@@ -114,14 +114,14 @@ class GeneticAlgorithmOptimizer(opt.Optimizer):
     def optimize(self, target_function, params, train_input, truth_output):
         rmse_function = rf.RmseFunction(target_function)
         args = np.concatenate((train_input, truth_output), 1)
-        params_num = params.shape.shape[0]
+        params_num = params.shape[0]
         # Step 1. Initialize population
         params_population = np.random.rand(self.seed_num, params_num)
         # start optimizing
         best_params = np.random.rand(1, params_num)
         min_rmse = sys.maxsize
         for e in range(self.epoch_num):
-            print("Epoch %d/%d" %(e+1, self.epoch_num))
+            print("Epoch %d/%d" %(e+1, self.epoch_num), self.denormalize_params(best_params))
             # Step 2. Record the best parameters
             for j in range(self.seed_num):
                 denormalized_params = self.denormalize_params(params_population[j, :])
