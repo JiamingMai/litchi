@@ -1,13 +1,102 @@
+import py.rmse_function as rf
 import py.optimizer as opt
+import numpy as np
+import sys
 
 
 class GeneticAlgorithmOptimizer(opt.Optimizer):
-    pass
 
+    def __init__(self, boundaries, epoch_num=10000, seed_num=100,
+                 crossover_probability=0.88, mutation_probability=0.10):
+        self.boundaries = boundaries
+        self.epoch_num = epoch_num
+        self.seed_num = seed_num
+        self.crossover_probability = crossover_probability
+        self.mutation_probability = mutation_probability
 
-May = GeneticAlgorithmOptimizer("May", "female")
-Peter = opt.Optimizer("Peter", "male")
+    def denormalize_params(self, params):
+        params_num = params.shape[1]
+        denormalized_params = np.array(params)
+        for i in range(params_num):
+            min_boundary = self.boundaries[i, 0]
+            max_boundary = self.boundaries[i, 1]
+            new_value = np.multiply(params[0, i], max_boundary - min_boundary) + min_boundary
+            denormalized_params[0, i] = new_value
+        return denormalized_params
 
-print(May.name, May.sex, Peter.name, Peter.sex)
-May.print_title()
-Peter.print_title()
+    def select_operator(self, rmse_function, params_population, args):
+
+        return
+
+    def crossover_operator(self, params_population):
+        params_num = params_population.shape[1]
+        new_population = np.array(params_population)
+
+        # select the items that can do crossover
+        selected_indices = []
+        for i in self.seed_num:
+            if np.random.rand() < self.crossover_probability:
+                selected_indices.append(i)
+        selected_indices = np.array(selected_indices)
+
+        # drop the single one to guarantee that the number of selected indices is even
+        if len(selected_indices) % 2 != 0:
+            selected_indices = selected_indices[:len(selected_indices)-1];
+
+        # do crossover
+        for k in range(0, len(selected_indices), 2):
+            i = selected_indices[k]
+            j = selected_indices[k + 1]
+            new_items = self.cross(params_population[i, :], params_population[j, :], params_num)
+            new_population[i, :] = new_items[0, :]
+            new_population[j, :] = new_items[1, :]
+
+        return new_population
+
+    def cross(self, item1, item2, bit_num):
+        cross_bits = np.random.randint(bit_num)
+        new_items = np.random.rand(2, bit_num)
+        # generate the first one
+
+        # generate the second one
+
+        return new_items
+
+    def mutation_operator(self, params_population):
+        params_num = params_population.shape[1]
+        for i in range(self.seed_num):
+            for j in range(params_num):
+                if np.random.rand() < self.mutation_probability:
+                    params_population[i, j] = np.random.rand()
+        return params_population
+
+    def optimize(self, target_function, params, train_input, truth_output):
+        rmse_function = rf.RmseFunction(target_function)
+        args = np.concatenate((train_input, truth_output), 1)
+        params_num = params.shape.shape[0]
+        # Step 1. Initialize population
+        params_population = np.random.rand(self.seed_num, params_num)
+        # start optimizing
+        best_params = np.random.rand(1, params_num)
+        min_rmse = sys.maxsize
+        for e in range(self.epoch_num):
+            print("Epoch %d/%d" %(e+1, self.epoch_num))
+            # Step 2. Record the best parameters
+            for j in range(self.seed_num):
+                denormalized_params = self.denormalize_params(params_population[j, :])
+                rmse = rmse_function.fun(denormalized_params, args)
+                if rmse < min_rmse:
+                    min_rmse = rmse
+                    best_params = np.array(params_population[j, :])
+
+            # Step 3. Execute the selection operator
+            params_population = self.selection_operator(rmse_function, params_population, args)
+
+            # Step 4. Execute the crossover operator
+            params_population = self.crossover_operator(params_population)
+
+            # Step 5. Execute the mutation operator
+            params_population = self.mutation_operator(params_population)
+
+        denormalized_best_params = self.denormalize_params(best_params)
+        return denormalized_best_params
