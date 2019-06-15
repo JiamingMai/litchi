@@ -16,7 +16,7 @@ package jm.app;
 
 import org.junit.jupiter.api.Test;
 
-public class NeuralNetworkModelTest {
+public class FastNeuralNetworkModelTest {
 
     @Test
     public void testNeuralNetwork(){
@@ -42,9 +42,9 @@ public class NeuralNetworkModelTest {
         label[1].setValue(0, 0, 1);
         label[2].setValue(0, 0, 1);
         label[3].setValue(0, 0, 0);
-        
-        NeuralNetworkModel network = new NeuralNetworkModel(2, 3, 1);
-        network.setActivationFunction(NeuralNetworkModel.ActivationFunction.SIGMOID);
+
+        FastNeuralNetworkModel network = new FastNeuralNetworkModel(2, 3, 1);
+        network.setActivationFunction(FastNeuralNetworkModel.ActivationFunction.SIGMOID);
         /*
         Double[][][] weights = new Double[2][][];
         weights[0] = new Double[3][2];
@@ -66,11 +66,11 @@ public class NeuralNetworkModelTest {
         biases[0][2] = -0.525310872754804;
         biases[1] = new Double[1];
         biases[1][0] = -1.19737302691328;
-        
+
         network.setWeitghts(weights);
         network.setBiases(biases);
         */
-                      
+
         network.train(input, label);
         Matrix res1 = network.forward(input[0]);
         Matrix res2 = network.forward(input[1]);
@@ -80,5 +80,11 @@ public class NeuralNetworkModelTest {
         System.out.println(res2);
         System.out.println(res3);
         System.out.println(res4);
+    }
+
+    private static void printRes(double[] res){
+        for(int i = 0; i < res.length; i++){
+            System.out.println(res[i]);
+        }
     }
 }

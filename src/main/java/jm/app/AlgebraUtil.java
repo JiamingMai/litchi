@@ -217,6 +217,21 @@ public class AlgebraUtil {
         return invMat;
     }
 
+    public final static Matrix dot(Matrix matA, Matrix matB) {
+        if (matA == null || matB == null ||
+                matA.getRowNum() != matB.getRowNum() || matA.getColNum() != matB.getColNum()) {
+            return null;
+        }
+        Matrix newMat = new Matrix(matA.getRowNum(), matA.getColNum());
+        for (int i = 0; i < matA.getRowNum(); i++) {
+            for (int j = 0; j < matA.getColNum(); j++) {
+                BigDecimal value = matA.getValue(i, j).multiply(matB.getValue(i, j));
+                newMat.setValue(i, j, value);
+            }
+        }
+        return newMat;
+    }
+
     public final static Matrix dot(Matrix mat, BigDecimal element) {
         if (mat == null) {
             return null;

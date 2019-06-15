@@ -1,25 +1,30 @@
 package jm.app;
 
+import java.math.BigDecimal;
 import java.util.Random;
 
 public class NeuralNetworkModel {
 
-    private Double[][][] weights;
+    private Matrix[] weights;
 
-    private Double[][] biases;
+    private Matrix[] biases;
 
-    private Double[][] outputMat;
+    private Matrix[] outputMat;
 
-    private double lambda = 0.1;
+    private BigDecimal lambda = new BigDecimal(0.1);
 
     private int epochNum = 100000;
 
-    private final double RANDOM_COEFFIENCE = 1.0;
+    private final BigDecimal RANDOM_COEFFIENCE = new BigDecimal(1.0);
 
     ActivationFunction activationFunction = ActivationFunction.SIGMOID;
 
-    public double getLambda() {
+    public BigDecimal getLambda() {
         return lambda;
+    }
+
+    public void setLambda(BigDecimal lambda) {
+        this.lambda = lambda;
     }
 
     public int getEpochNum() {
@@ -30,34 +35,35 @@ public class NeuralNetworkModel {
         this.epochNum = epochNum;
     }
 
-    public void setLambda(double lambda) {
-        this.lambda = lambda;
+    public Matrix[] getWeights() {
+        return weights;
     }
 
-    public void setWeitghts(Double[][][] weights) {
+    public void setWeights(Matrix[] weights) {
         this.weights = weights;
     }
 
-    public void setBiases(Double[][] biases) {
+    public Matrix[] getBiases() {
+        return biases;
+    }
+
+    public void setBiases(Matrix[] biases) {
         this.biases = biases;
     }
 
     public NeuralNetworkModel(int... numOfEachLayer) {
-        biases = new Double[numOfEachLayer.length - 1][];
+        biases = new Matrix[numOfEachLayer.length - 1];
         for (int i = 0; i < biases.length; i++) {
-            biases[i] = new Double[numOfEachLayer[i + 1]];
+            biases[i] = new Matrix(numOfEachLayer[i + 1], 1);
         }
-
-        weights = new Double[numOfEachLayer.length - 1][][];
+        weights = new Matrix[numOfEachLayer.length - 1];
         for (int i = 0; i < weights.length; i++) {
-            weights[i] = new Double[numOfEachLayer[i + 1]][numOfEachLayer[i]];
+            weights[i] = new Matrix(numOfEachLayer[i + 1], numOfEachLayer[i]);
         }
-
-        outputMat = new Double[numOfEachLayer.length][];
+        outputMat = new Matrix[numOfEachLayer.length];
         for (int i = 0; i < outputMat.length; i++) {
-            outputMat[i] = new Double[numOfEachLayer[i]];
+            outputMat[i] = new Matrix(numOfEachLayer[i], 1);
         }
-
         init();
     }
 
@@ -69,9 +75,9 @@ public class NeuralNetworkModel {
     private void initWeights() {
         Random random = new Random();
         for (int i = 0; i < weights.length; i++) {
-            for (int j = 0; j < weights[i].length; j++) {
-                for (int k = 0; k < weights[i][j].length; k++) {
-                    weights[i][j][k] = RANDOM_COEFFIENCE * random.nextDouble();
+            for (int j = 0; j < weights[i].getRowNum(); j++) {
+                for (int k = 0; k < weights[i].getColNum(); k++) {
+                    weights[i].setValue(j, k, RANDOM_COEFFIENCE.multiply(new BigDecimal(random.nextDouble())));
                 }
             }
         }
@@ -80,72 +86,69 @@ public class NeuralNetworkModel {
     private void initBiases() {
         Random random = new Random();
         for (int i = 0; i < biases.length; i++) {
-            for (int j = 0; j < biases[i].length; j++) {
-                biases[i][j] = RANDOM_COEFFIENCE * random.nextDouble();
+            for (int j = 0; j < biases[i].getRowNum(); j++) {
+                biases[i].setValue(j, 0, RANDOM_COEFFIENCE.multiply(new BigDecimal(random.nextDouble())));
             }
         }
     }
 
-    public void train(Matrix input, Matrix label) {
-        // TODO: implement this method with Matrix type
-    }
-
-    public void train(double[][] input, double[][] label) {
+    public void train(Matrix[] input, Matrix[] label) {
         for (int i = 0; i < epochNum; i++) {
+            BigDecimal avgMse = new BigDecimal(0.0);
             for (int sampleNo = 0; sampleNo < input.length; sampleNo++) {
-                double[][] sensitivity = estSensitivity(input, label, sampleNo);
+                Matrix[] sensitivity = estSensitivity(input, label, sampleNo);
                 updateWeights(sensitivity);
                 updateBiases(sensitivity);
-                printMse(input, label);
+                avgMse = avgMse.add(calcMse(input, label));
             }
+            avgMse = new BigDecimal(avgMse.doubleValue() / input.length);
+            System.out.println(String.format("Epoch #%d/%d, MSE: %.5f", i+1, epochNum, avgMse.doubleValue()));
         }
     }
 
-    private void printMse(double[][] input, double[][] label) {
-        double sum = 0;
+    private BigDecimal calcMse(Matrix[] input, Matrix[] label) {
+        BigDecimal sum = new BigDecimal(0.0);
         for (int i = 0; i < input.length; i++) {
-            double[] res = forward(input[i]);
-            for (int j = 0; j < label[i].length; j++) {
-                sum += (res[j] - label[i][j]) * (res[j] - label[i][j]);
+            Matrix res = forward(input[i]);
+            for (int j = 0; j < label[i].getRowNum(); j++) {
+                sum = sum.add((res.getValue(j, 0).subtract(label[i].getValue(j, 0))).pow(2));
             }
         }
-        double mse = sum / label.length;
-        System.out.println("MSE: " + mse);
+        double mse = sum.doubleValue() / label.length;
+        //System.out.println("MSE: " + mse);
+        return new BigDecimal(mse);
     }
 
-    private void updateWeights(double[][] sensitivity) {
+    private void updateWeights(Matrix[] sensitivity) {
         for (int layer = 0; layer < weights.length; layer++) {
-            for (int i = 0; i < weights[layer].length; i++) {
-                for (int j = 0; j < weights[layer][i].length; j++) {
-                    weights[layer][i][j] = weights[layer][i][j] - lambda * sensitivity[layer][i] * outputMat[layer][j];
+            for (int i = 0; i < weights[layer].getRowNum(); i++) {
+                for (int j = 0; j < weights[layer].getColNum(); j++) {
+                    weights[layer].setValue(i, j, weights[layer].getValue(i, j).subtract(lambda.multiply(sensitivity[layer].getValue(i, 0).multiply(outputMat[layer].getValue(j, 0)))));
                 }
             }
         }
     }
 
-    private void updateBiases(double[][] sensitivity) {
+    private void updateBiases(Matrix[] sensitivity) {
         for (int layer = 0; layer < biases.length; layer++) {
-            for (int i = 0; i < biases[layer].length; i++) {
-                biases[layer][i] = biases[layer][i] - lambda * sensitivity[layer][i];
-            }
+            biases[layer] = AlgebraUtil.subtract(biases[layer], AlgebraUtil.dot(sensitivity[layer], lambda));
         }
     }
 
-    private double[][] estSensitivity(double[][] input, double[][] label, int sampleNo) {
-        double[][] sensitivity = new double[biases.length][];
+    private Matrix[] estSensitivity(Matrix[] input, Matrix[] label, int sampleNo) {
+        Matrix[] sensitivity = new Matrix[biases.length];
         for (int i = 0; i < biases.length; i++) {
-            sensitivity[i] = new double[biases[i].length];
+            sensitivity[i] = new Matrix(biases[i].getRowNum(), 1);
         }
 
-        double[] output = forward(input[sampleNo]);
-        for (int i = 0; i < output.length; i++) {
-            sensitivity[sensitivity.length - 1][i] = -2 * derivativeOfActFun(output[i]) * (label[sampleNo][i] - output[i]);
-        }
+        Matrix output = forward(input[sampleNo]);
+
+        sensitivity[sensitivity.length - 1] = AlgebraUtil.dot(AlgebraUtil.dot(derivativeOfActFun(output), AlgebraUtil.subtract(label[sampleNo], output)), new BigDecimal(-2));
 
         for (int layer = sensitivity.length - 2; layer >= 0; layer--) {
-            for (int i = 0; i < sensitivity[layer].length; i++) {
-                sensitivity[layer][i] = derivativeOfActFun(outputMat[layer + 1][i])
-                        * innerProduct(selectColumn(weights[layer + 1], i), sensitivity[layer + 1]);
+            for (int i = 0; i < sensitivity[layer].getRowNum(); i++) {
+                sensitivity[layer].setValue(i, 0, derivativeOfActFun(outputMat[layer + 1].getValue(i, 0)).multiply(
+                        AlgebraUtil.inner(AlgebraUtil.getColumnVector(weights[layer + 1], i), sensitivity[layer + 1])));
             }
         }
         return sensitivity;
@@ -165,19 +168,27 @@ public class NeuralNetworkModel {
         return vec;
     }
 
-    public double[] forward(double[] input) {
-        outputMat[0] = convertDoubleArray(input);
+    public Matrix forward(Matrix input) {
+        outputMat[0] = AlgebraUtil.copy(input);
         for (int i = 0; i < weights.length; i++) {
-            for (int j = 0; j < weights[i].length; j++) {
-                outputMat[i + 1][j] = activationFunction(innerProduct(outputMat[i], weights[i][j]) + biases[i][j]);
-            }
+            outputMat[i + 1] = activationFunction(AlgebraUtil.add(AlgebraUtil.multiply(weights[i], outputMat[i]), biases[i]));
         }
-        return convertDoubleArray(outputMat[outputMat.length - 1]);
+        return AlgebraUtil.copy(outputMat[outputMat.length - 1]);
     }
 
-    private double activationFunction(double x) {
+    private Matrix activationFunction(Matrix mat) {
+        Matrix newMat = new Matrix(mat.getRowNum(), mat.getColNum());
+        for (int i = 0; i < mat.getRowNum(); i++) {
+            for (int j = 0; j < mat.getColNum(); j++) {
+                newMat.setValue(i, j, activationFunction(mat.getValue(i, j)));
+            }
+        }
+        return newMat;
+    }
+
+    private BigDecimal activationFunction(BigDecimal x) {
         switch (activationFunction){
-            case SIGMOID: return 1 / (1 + Math.exp(-x));
+            case SIGMOID: return new BigDecimal(1 / (1 + Math.exp(x.negate().doubleValue())));
             case LINEAR: return x;
             default: return x;
         }
@@ -217,11 +228,21 @@ public class NeuralNetworkModel {
         return outputArr;
     }
 
-    private double derivativeOfActFun(double output){
+    private Matrix derivativeOfActFun(Matrix output) {
+        Matrix activeOutput = new Matrix(output.getRowNum(), output.getColNum());
+        for (int i = 0; i < output.getRowNum(); i++) {
+            for (int j = 0; j < output.getColNum(); j++) {
+                activeOutput.setValue(i, j, derivativeOfActFun(output.getValue(i, j)));
+            }
+        }
+        return activeOutput;
+    }
+
+    private BigDecimal derivativeOfActFun(BigDecimal output){
         switch (activationFunction){
-            case SIGMOID: return output * (1 - output);
-            case LINEAR: return 1.0;
-            default: return 1.0;
+            case SIGMOID: return output.multiply(new BigDecimal(1).subtract(output));
+            case LINEAR: return new BigDecimal(1.0);
+            default: return new BigDecimal(1.0);
         }
     }
 

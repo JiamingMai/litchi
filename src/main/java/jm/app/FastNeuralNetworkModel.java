@@ -2,7 +2,7 @@ package jm.app;
 
 import java.util.Random;
 
-public class NeuralNetworkModelBackup {
+public class FastNeuralNetworkModel {
     Double[][][] weights;
     Double[][] biases;
     Double[][] outputMat;
@@ -35,7 +35,7 @@ public class NeuralNetworkModelBackup {
         this.biases = biases;
     }
 
-    public NeuralNetworkModelBackup(int... numOfEachLayer) {
+    public FastNeuralNetworkModel(int... numOfEachLayer) {
         biases = new Double[numOfEachLayer.length - 1][];
         for (int i = 0; i < biases.length; i++) {
             biases[i] = new Double[numOfEachLayer[i + 1]];
@@ -79,8 +79,25 @@ public class NeuralNetworkModelBackup {
         }
     }
 
+    public void train(Matrix[] inputMat, Matrix[] labelMat) {
+        double[][] input = new double[inputMat.length][inputMat[0].getRowNum()];
+        double[][] label = new double[labelMat.length][labelMat[0].getRowNum()];
+        for (int i = 0; i < input.length; i++) {
+            for (int j = 0; j < input[0].length; j++) {
+                input[i][j] = inputMat[i].getValue(j, 0).doubleValue();
+            }
+        }
+        for (int i = 0; i < label.length; i++) {
+            for (int j = 0; j < label[0].length; j++) {
+                label[i][j] = labelMat[i].getValue(j, 0).doubleValue();
+            }
+        }
+        train(input, label);
+    }
+
     public void train(double[][] input, double[][] label) {
         for (int i = 0; i < epoch; i++) {
+            System.out.println(String.format("Epoch #%d/%d", i+1, epoch));
             for (int sampleNo = 0; sampleNo < input.length; sampleNo++) {
                 double[][] sensitivity = estSensitivity(input, label, sampleNo);
                 updateWeights(sensitivity);
@@ -152,6 +169,19 @@ public class NeuralNetworkModelBackup {
             vec[i] = mat[i][col];
         }
         return vec;
+    }
+
+    public Matrix forward(Matrix inputMat) {
+        double[] input = new double[inputMat.getRowNum()];
+        for (int i = 0; i < input.length; i++) {
+            input[i] = inputMat.getValue(i, 0).doubleValue();
+        }
+        double[] output = forward(input);
+        Matrix outputMat = new Matrix(output.length, 1);
+        for (int i = 0; i < output.length; i++) {
+            outputMat.setValue(i, 0, output[i]);
+        }
+        return outputMat;
     }
 
     public double[] forward(double[] input) {
