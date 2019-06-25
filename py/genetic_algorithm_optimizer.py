@@ -6,7 +6,7 @@ import sys
 
 class GeneticAlgorithmOptimizer(opt.Optimizer):
 
-    def __init__(self, boundaries, epoch_num=10000, seed_num=100,
+    def __init__(self, boundaries, epoch_num=1000, seed_num=100,
                  crossover_probability=0.88, mutation_probability=0.10):
         self.boundaries = boundaries
         self.epoch_num = epoch_num
