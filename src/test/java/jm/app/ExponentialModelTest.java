@@ -1,5 +1,7 @@
 package jm.app;
 
+import jm.app.algebra.Matrix;
+import jm.app.algorithm.ExponentialModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

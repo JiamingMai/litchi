@@ -1,7 +1,10 @@
 package jm.app;
 
+import jm.app.algebra.Matrix;
+import jm.app.optimize.GeneticAlgorithmOptimizer;
+import jm.app.optimize.Optimizer;
+import jm.app.optimize.TargetFunction;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

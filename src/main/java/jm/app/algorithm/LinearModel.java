@@ -1,4 +1,8 @@
-package jm.app;
+package jm.app.algorithm;
+
+import jm.app.optimize.BasicModel;
+import jm.app.algebra.AlgebraUtil;
+import jm.app.algebra.Matrix;
 
 import java.math.BigDecimal;
 

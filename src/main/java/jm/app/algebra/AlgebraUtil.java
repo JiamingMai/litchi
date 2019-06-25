@@ -1,4 +1,4 @@
-package jm.app;
+package jm.app.algebra;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

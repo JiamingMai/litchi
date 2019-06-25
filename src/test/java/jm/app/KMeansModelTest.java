@@ -1,5 +1,7 @@
 package jm.app;
 
+import jm.app.algebra.Matrix;
+import jm.app.algorithm.KMeansModel;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.math.BigDecimal;

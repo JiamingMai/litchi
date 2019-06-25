@@ -1,10 +1,13 @@
 package jm.app;
 
+import jm.app.algebra.AlgebraUtil;
+import jm.app.algebra.Matrix;
+import jm.app.algorithm.*;
+import jm.app.optimize.BasicModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 public class BasicModelTest {
 

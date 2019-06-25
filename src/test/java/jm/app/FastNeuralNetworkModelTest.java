@@ -14,6 +14,8 @@
 
 package jm.app;
 
+import jm.app.algebra.Matrix;
+import jm.app.algorithm.FastNeuralNetworkModel;
 import org.junit.jupiter.api.Test;
 
 public class FastNeuralNetworkModelTest {

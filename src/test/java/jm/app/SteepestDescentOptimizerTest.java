@@ -1,5 +1,8 @@
 package jm.app;
 
+import jm.app.algebra.Matrix;
+import jm.app.optimize.SteepestDescentOptimizer;
+import jm.app.optimize.TargetFunction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

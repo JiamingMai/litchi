@@ -1,5 +1,8 @@
 package jm.app;
 
+import jm.app.algebra.AlgebraUtil;
+import jm.app.algebra.Matrix;
+import jm.app.algorithm.GmmModel;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
