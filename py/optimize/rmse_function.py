@@ -1,4 +1,4 @@
-import py.target_function as tf
+import py.optimize.target_function as tf
 import numpy as np
 
 

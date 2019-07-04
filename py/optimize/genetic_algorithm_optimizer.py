@@ -1,5 +1,5 @@
-import py.rmse_function as rf
-import py.optimizer as opt
+import py.optimize.rmse_function as rf
+import py.optimize as opt
 import numpy as np
 import sys
 

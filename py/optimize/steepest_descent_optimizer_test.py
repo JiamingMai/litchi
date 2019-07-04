@@ -1,5 +1,5 @@
-import py.target_function as tf
-import py.steepest_descent_optimizer as sdo
+import py.optimize.target_function as tf
+import py.optimize.steepest_descent_optimizer as sdo
 import numpy as np
 
 

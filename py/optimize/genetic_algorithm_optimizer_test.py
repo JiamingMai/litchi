@@ -1,5 +1,5 @@
-import py.target_function as tf
-import py.genetic_algorithm_optimizer as gao
+import py.optimize.target_function as tf
+import py.optimize.genetic_algorithm_optimizer as gao
 import numpy as np
 
 
