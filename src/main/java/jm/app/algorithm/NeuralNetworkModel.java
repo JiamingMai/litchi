@@ -22,38 +22,6 @@ public class NeuralNetworkModel {
 
     ActivationFunction activationFunction = ActivationFunction.SIGMOID;
 
-    public BigDecimal getLambda() {
-        return lambda;
-    }
-
-    public void setLambda(BigDecimal lambda) {
-        this.lambda = lambda;
-    }
-
-    public int getEpochNum() {
-        return epochNum;
-    }
-
-    public void setEpochNum(int epochNum) {
-        this.epochNum = epochNum;
-    }
-
-    public Matrix[] getWeights() {
-        return weights;
-    }
-
-    public void setWeights(Matrix[] weights) {
-        this.weights = weights;
-    }
-
-    public Matrix[] getBiases() {
-        return biases;
-    }
-
-    public void setBiases(Matrix[] biases) {
-        this.biases = biases;
-    }
-
     public NeuralNetworkModel(int... numOfEachLayer) {
         biases = new Matrix[numOfEachLayer.length - 1];
         for (int i = 0; i < biases.length; i++) {
@@ -118,7 +86,6 @@ public class NeuralNetworkModel {
             }
         }
         double mse = sum.doubleValue() / label.length;
-        //System.out.println("MSE: " + mse);
         return new BigDecimal(mse);
     }
 
@@ -157,20 +124,6 @@ public class NeuralNetworkModel {
         return sensitivity;
     }
 
-    private int generateSampleNo(double[][] input, int batchSize) {
-        Random random = new Random();
-        int sampleNo = random.nextInt(input.length);
-        return sampleNo;
-    }
-
-    private double[] selectColumn(Double[][] mat, int col) {
-        double[] vec = new double[mat.length];
-        for (int i = 0; i < mat.length; i++) {
-            vec[i] = mat[i][col];
-        }
-        return vec;
-    }
-
     public Matrix forward(Matrix input) {
         outputMat[0] = AlgebraUtil.copy(input);
         for (int i = 0; i < weights.length; i++) {
@@ -197,40 +150,6 @@ public class NeuralNetworkModel {
         }
     }
 
-    private Double innerProduct(Double[] vec1, Double[] vec2) {
-        if (vec1.length != vec2.length) {
-            return null;
-        }
-        return innerProduct(convertDoubleArray(vec1), convertDoubleArray(vec2));
-    }
-
-    private Double innerProduct(double[] vec1, double[] vec2) {
-        if (vec1.length != vec2.length) {
-            return null;
-        }
-        double res = 0;
-        for (int i = 0; i < vec1.length; i++) {
-            res += vec1[i] * vec2[i];
-        }
-        return res;
-    }
-
-    private Double[] convertDoubleArray(double[] inputArr) {
-        Double[] outputArr = new Double[inputArr.length];
-        for (int i = 0; i < outputArr.length; i++) {
-            outputArr[i] = inputArr[i];
-        }
-        return outputArr;
-    }
-
-    private double[] convertDoubleArray(Double[] inputArr) {
-        double[] outputArr = new double[inputArr.length];
-        for (int i = 0; i < outputArr.length; i++) {
-            outputArr[i] = inputArr[i];
-        }
-        return outputArr;
-    }
-
     private Matrix derivativeOfActFun(Matrix output) {
         Matrix activeOutput = new Matrix(output.getRowNum(), output.getColNum());
         for (int i = 0; i < output.getRowNum(); i++) {
@@ -249,15 +168,48 @@ public class NeuralNetworkModel {
         }
     }
 
+    public enum ActivationFunction {
+        SIGMOID, LINEAR;
+    }
+
+    // the following are the getter and setter methods
+    public BigDecimal getLambda() {
+        return lambda;
+    }
+
+    public void setLambda(BigDecimal lambda) {
+        this.lambda = lambda;
+    }
+
+    public int getEpochNum() {
+        return epochNum;
+    }
+
+    public void setEpochNum(int epochNum) {
+        this.epochNum = epochNum;
+    }
+
+    public Matrix[] getWeights() {
+        return weights;
+    }
+
+    public void setWeights(Matrix[] weights) {
+        this.weights = weights;
+    }
+
+    public Matrix[] getBiases() {
+        return biases;
+    }
+
+    public void setBiases(Matrix[] biases) {
+        this.biases = biases;
+    }
+
     public ActivationFunction getActivationFunction() {
         return activationFunction;
     }
 
     public void setActivationFunction(ActivationFunction activationFunction) {
         this.activationFunction = activationFunction;
-    }
-
-    public enum ActivationFunction {
-        SIGMOID, LINEAR;
     }
 }
