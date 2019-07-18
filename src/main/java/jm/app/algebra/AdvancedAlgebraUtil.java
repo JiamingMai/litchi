@@ -1,18 +1,45 @@
 package jm.app.algebra;
 
+import org.ojalgo.matrix.PrimitiveMatrix;
+import org.ojalgo.matrix.decomposition.Eigenvalue;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AlgebraUtil {
+public class AdvancedAlgebraUtil {
+
+    private final static PrimitiveMatrix.Factory matrixFactory = PrimitiveMatrix.FACTORY;
+
+    private final static Matrix convert(PrimitiveMatrix primitiveMatrix) {
+        Long rowNum = primitiveMatrix.countRows();
+        Long colNum = primitiveMatrix.countColumns();
+        Matrix matrix = new Matrix(rowNum.intValue(), colNum.intValue());
+        for (int i = 0; i < rowNum; i++) {
+            for (int j = 0; j < colNum; j++) {
+                matrix.setValue(i, j, primitiveMatrix.get(i, j));
+            }
+        }
+        return matrix;
+    }
+
+    private final static PrimitiveMatrix convert(Matrix matrix) {
+        int rowNum = matrix.getRowNum();
+        int colNum = matrix.getColNum();
+        PrimitiveMatrix primitiveMatrix = matrixFactory.makeZero(rowNum, colNum);
+        PrimitiveMatrix.DenseReceiver matrixBuilder = primitiveMatrix.copy();
+        for (int i = 0; i < rowNum; i++) {
+            for (int j = 0; j < colNum; j++) {
+                matrixBuilder.add(i, j, matrix.getValue(i, j).doubleValue());
+            }
+        }
+        return matrixBuilder.build();
+    }
 
     public final static Matrix identityMatrix(int dimension) {
-        Matrix identityMatrix = new Matrix(dimension, dimension);
-        for (int i = 0; i < identityMatrix.getRowNum(); i++) {
-            identityMatrix.setValue(i, i, 1.0);
-        }
-        return identityMatrix;
+        PrimitiveMatrix identitiyMat = matrixFactory.makeIdentity(dimension);
+        return convert(identitiyMat);
     }
 
     public final static Matrix multiply(Matrix a, Matrix b) {
@@ -20,20 +47,13 @@ public class AlgebraUtil {
             return null;
         }
         if (a.getColNum() != b.getRowNum()) {
-            // TODO: throw an exception here
+            System.out.println("Error: The column number of A must be the same with the row number of B!");
             return null;
         }
-        Matrix resultMat = new Matrix(a.getRowNum(), b.getColNum());
-        for (int i = 0; i < resultMat.getRowNum(); i++) {
-            for (int j = 0; j < resultMat.getColNum(); j++) {
-                BigDecimal value = new BigDecimal(0.0);
-                for (int c = 0; c < a.getColNum(); c++) {
-                    value = value.add(a.getValue(i, c).multiply(b.getValue(c, j)));
-                }
-                resultMat.setValue(i, j, value);
-            }
-        }
-        return resultMat;
+        PrimitiveMatrix matrixA = convert(a);
+        PrimitiveMatrix matrixB = convert(b);
+        PrimitiveMatrix matrixC = matrixA.multiply(matrixB);
+        return convert(matrixC);
     }
 
     public final static Matrix multiply(Matrix a, BigDecimal b) {
@@ -56,17 +76,13 @@ public class AlgebraUtil {
             return null;
         }
         if (a.getRowNum() != b.getRowNum() || a.getColNum() != b.getColNum()) {
-            // TODO: throw exception here
+            System.out.println("Error: The shape of A must be the same with that of B!");
             return null;
         }
-        Matrix resultMat = new Matrix(a.getRowNum(), a.getColNum());
-        for (int i = 0; i < resultMat.getRowNum(); i++) {
-            for (int j = 0; j < resultMat.getColNum(); j++) {
-                BigDecimal value = a.getValue(i, j).add(b.getValue(i, j));
-                resultMat.setValue(i, j, value);
-            }
-        }
-        return resultMat;
+        PrimitiveMatrix matrixA = convert(a);
+        PrimitiveMatrix matrixB = convert(b);
+        PrimitiveMatrix matrixC = matrixA.add(matrixB);
+        return convert(matrixC);
     }
 
     public final static Matrix subtract(Matrix a, Matrix b) {
@@ -74,44 +90,26 @@ public class AlgebraUtil {
             return null;
         }
         if (a.getRowNum() != b.getRowNum() || a.getColNum() != b.getColNum()) {
-            // TODO: throw exception here
+            System.out.println("Error: The shape of A must be the same with that of B!");
             return null;
         }
-        Matrix resultMat = new Matrix(a.getRowNum(), a.getColNum());
-        for (int i = 0; i < resultMat.getRowNum(); i++) {
-            for (int j = 0; j < resultMat.getColNum(); j++) {
-                BigDecimal value = a.getValue(i, j).subtract(b.getValue(i, j));
-                resultMat.setValue(i, j, value);
-            }
-        }
-        return resultMat;
+        PrimitiveMatrix matrixA = convert(a);
+        PrimitiveMatrix matrixB = convert(b);
+        PrimitiveMatrix matrixC = matrixA.subtract(matrixB);
+        return convert(matrixC);
     }
 
     public final static BigDecimal determinant(Matrix mat) {
         if (mat.getColNum() != mat.getRowNum()) {
-            // TODO: throw an exception here
+            System.out.println("Error: the row number of the matrix must be the same with the column number of the matrix.");
             return null;
         }
         if (mat.getRowNum() > 10) {
-            // TODO: throw an exception here
+            System.out.println("Error: the matrix is too large to be calculated.");
             return null;
         }
-        if (mat.getRowNum() == 1) {
-            return new BigDecimal(mat.getValue(0, 0).doubleValue());
-        }
-        int n = mat.getRowNum();
-        List<Integer[]> permutations = calcFullPermutation(n);
-        BigDecimal det = new BigDecimal(0.0);
-        for (Integer[] permutation : permutations) {
-            int t = calcInversionNumber(permutation);
-            BigDecimal temp = new BigDecimal(Math.pow(-1, t));
-            for (int i = 0, p = 0; p < permutation.length; p++, i++) {
-                int j = permutation[p] - 1;
-                temp = temp.multiply(mat.getValue(i, j));
-            }
-            det = det.add(temp);
-        }
-        return det;
+        PrimitiveMatrix primitiveMatrix = convert(mat);
+        return primitiveMatrix.getDeterminant().toBigDecimal();
     }
 
     private final static List<Integer[]> calcFullPermutation(int n) {
@@ -185,36 +183,16 @@ public class AlgebraUtil {
         if (mat == null) {
             return null;
         }
-        Matrix transposedMat = new Matrix(mat.getColNum(), mat.getRowNum());
-        for (int i = 0; i < mat.getRowNum(); i++) {
-            for (int j = 0; j < mat.getColNum(); j++) {
-                BigDecimal value = mat.getValue(i, j);
-                transposedMat.setValue(j, i, value);
-            }
-        }
-        return transposedMat;
+        PrimitiveMatrix primitiveMatrix = convert(mat);
+        return convert(primitiveMatrix.transpose());
     }
 
     public final static Matrix inverse(Matrix mat) {
         if (mat == null || mat.getRowNum() != mat.getColNum()) {
             return null;
         }
-        if (mat.getRowNum() == 1) {
-            Matrix invMat = new Matrix(1, 1);
-            BigDecimal value = new BigDecimal(1.0 / mat.getValue(0, 0).doubleValue());
-            invMat.setValue(0, 0, value);
-            return invMat;
-        }
-
-        BigDecimal det = determinant(mat);
-        if (det.doubleValue() == 0.0) {
-            // TODO: throw an exception here
-            return null;
-        }
-        Matrix ajointMatrix = adjointMatrix(mat);
-        BigDecimal reciprocalDet = new BigDecimal(1.0 / det.doubleValue());
-        Matrix invMat = dot(ajointMatrix, reciprocalDet);
-        return invMat;
+        PrimitiveMatrix primitiveMatrix = convert(mat);
+        return convert(primitiveMatrix.invert());
     }
 
     public final static Matrix dot(Matrix matA, Matrix matB) {
@@ -239,14 +217,8 @@ public class AlgebraUtil {
         if (element == null) {
             return mat;
         }
-        Matrix newMat = new Matrix(mat.getRowNum(), mat.getColNum());
-        for (int i = 0; i < mat.getRowNum(); i++) {
-            for (int j = 0; j < mat.getColNum(); j++) {
-                BigDecimal value = mat.getValue(i, j).multiply(element);
-                newMat.setValue(i, j, value);
-            }
-        }
-        return newMat;
+        PrimitiveMatrix primitiveMatrix = convert(mat);
+        return convert(primitiveMatrix.multiply(element));
     }
 
     public final static Matrix adjointMatrix(Matrix mat) {
@@ -531,6 +503,15 @@ public class AlgebraUtil {
     private final static Matrix normalizeColumn(Matrix x, int column, BigDecimal maxValue, BigDecimal minValue) {
         Matrix newMat = new Matrix(x.getRowNum(), x.getColNum());
         BigDecimal width = maxValue.subtract(minValue);
+
+        // deal with the condition that maxValue equals to minValue
+        if (width.compareTo(new BigDecimal(0.0)) == 0) {
+            for (int r = 0; r < x.getRowNum(); r++) {
+                newMat.setValue(r, column, new BigDecimal(1.0));
+            }
+            return newMat;
+        }
+
         for (int r = 0; r < x.getRowNum(); r++) {
             BigDecimal newValue = x.getValue(r, column).subtract(minValue).multiply(new BigDecimal(1.0 / width.doubleValue()));
             newMat.setValue(r, column, newValue);
@@ -699,23 +680,23 @@ public class AlgebraUtil {
     }
 
     public final static Matrix[] eigen(Matrix a) {
-        Matrix eigenvalues = copy(a);
-        for (int i = 0; i < 20; i++) {
-            Matrix[] qr = qrFactorize(eigenvalues);
-            Matrix q = qr[0];
-            Matrix r = qr[1];
-            eigenvalues = multiply(r, q);
-        }
-        for (int i = 0; i < eigenvalues.getRowNum(); i++) {
-            for (int j = 0; j < eigenvalues.getColNum(); j++) {
-                if (i != j) {
-                    eigenvalues.setValue(i, j, 0.0);
-                }
+        Matrix eigenvalues = new Matrix(a.getRowNum(), a.getColNum());
+        Matrix eigenvectors = new Matrix(a.getRowNum(), a.getColNum());
+        PrimitiveMatrix primitiveMatrix = convert(a);
+        List<Eigenvalue.Eigenpair> eigenpairList = primitiveMatrix.getEigenpairs();
+        for (int i = eigenpairList.size() - 1; i >= 0; i--) {
+            // extract eigenvalue by order
+            Eigenvalue.Eigenpair eigenpair = eigenpairList.get(i);
+            double eigenvalue = eigenpair.value.getReal();
+            int index = eigenpairList.size() - 1 - i;
+            eigenvalues.setValue(index, index, eigenvalue);
+
+            // extract eigenvector
+            for (int j = 0; j < eigenpair.vector.size(); j++) {
+                double element = eigenpair.vector.get(j).getReal();
+                eigenvectors.setValue(j, index, element);
             }
         }
-
-        // TODO: the returned eigenvectors and eigenvalues are not corresponding yet
-        Matrix eigenvectors = inverse(subtract(a, eigenvalues));
         Matrix[] valuesAndVectors = new Matrix[2];
         valuesAndVectors[0] = eigenvalues;
         valuesAndVectors[1] = eigenvectors;
