@@ -24,23 +24,47 @@ def determinant(a):
 def inverse(a):
     return np.linalg.inv(a)
 
+# 需要参考Java实现来进行修改
+def normalize(a):
+    m = np.mean(a)
+    mx = max(a)
+    mn = min(a)
+    return [(float(i) - m) / (mx - mn) for i in a]
+
 def unitize(a):
+    unitized_a = np.copy(a)
     if len(a.shape) == 1:
         denominator = np.linalg.norm(a)
         for i in range(len(a)):
-            a[i] = a[i] / denominator
+            unitized_a[i] = a[i] / denominator
     elif a.shape[0] == 1:
         denominator = np.linalg.norm(a)
         for i in range(a.shape[1]):
-            a[0][i] = a[0][i] / denominator
+            unitized_a[0][i] = a[0][i] / denominator
     elif a.shape[1] == 1:
         denominator = np.linalg.norm(a)
         for i in range(a.shape[0]):
-            a[i][0] = a[i][0] / denominator
+            unitized_a[i][0] = a[i][0] / denominator
     else:
         print("Can only unitize a matrix with single row/column.")
-        return a
+        return unitized_a
 
+def orthogonalize(a):
+    dimension = a.shape[0]
+    vectorNum = a.shape[1]
+    b = np.random.rand(dimension, vectorNum)
+    for i in range(vectorNum):
+        ai = a[:, i]
+        bi = np.copy(ai)
+        for j in range(i):
+            bj = b[:, j]
+            coefficient = np.multiply(np.inner(bj, ai), 1.0 / np.inner(bj, bj))
+            coefficient = coefficient[0][0]
+        b[:, i] = bi[:, 0]
+        # unitization
+        for i in range(vectorNum):
+            b[:, i] = unitize(b[:, i])
+    return b
 #此处省略其它方法
 
 if __name__ == "__main__":
