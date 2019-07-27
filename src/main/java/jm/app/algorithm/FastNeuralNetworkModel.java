@@ -2,6 +2,7 @@ package jm.app.algorithm;
 
 import jm.app.algebra.Matrix;
 
+import java.util.List;
 import java.util.Random;
 
 public class FastNeuralNetworkModel {
@@ -9,7 +10,7 @@ public class FastNeuralNetworkModel {
     Double[][] biases;
     Double[][] outputMat;
     double lambda = 0.1;
-    int epoch = 100000;
+    int epoch = 10;
     final double RANDOM_COEFFIENCE = 1.0;
     ActivationFunction activationFunction = ActivationFunction.SIGMOID;
 
@@ -104,7 +105,7 @@ public class FastNeuralNetworkModel {
                 double[][] sensitivity = estSensitivity(input, label, sampleNo);
                 updateWeights(sensitivity);
                 updateBiases(sensitivity);
-                printMse(input, label);
+                //printMse(input, label);
             }
         }
     }
@@ -256,5 +257,18 @@ public class FastNeuralNetworkModel {
 
     public enum ActivationFunction {
         SIGMOID, LINEAR;
+    }
+
+    public Matrix[] getOutputMat() {
+        Matrix[] matrices = new Matrix[outputMat.length];
+        for (int i = 0; i < outputMat.length; i++) {
+            Double[] ithOutputMat = outputMat[i];
+            Matrix matrix = new Matrix(ithOutputMat.length, 1);
+            for (int j = 0; j < ithOutputMat.length; j++) {
+                matrix.setValue(j, 0, ithOutputMat[j]);
+            }
+            matrices[i] = matrix;
+        }
+        return matrices;
     }
 }
