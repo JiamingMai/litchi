@@ -14,6 +14,8 @@ public class NeuralNetworkModel {
 
     private Matrix[] outputMat;
 
+    private int batchSize = 200;
+
     private BigDecimal lambda = new BigDecimal(0.1);
 
     private int epochNum = 100000;
@@ -66,7 +68,8 @@ public class NeuralNetworkModel {
     public void train(Matrix[] input, Matrix[] label) {
         for (int i = 0; i < epochNum; i++) {
             BigDecimal avgMse = new BigDecimal(0.0);
-            for (int sampleNo = 0; sampleNo < input.length; sampleNo++) {
+            for (int j = 0; j < batchSize; j++) {
+                int sampleNo = (int) (Math.random() * (input.length - 1));
                 Matrix[] sensitivity = estSensitivity(input, label, sampleNo);
                 updateWeights(sensitivity);
                 updateBiases(sensitivity);

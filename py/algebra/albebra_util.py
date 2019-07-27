@@ -24,12 +24,31 @@ def determinant(a):
 def inverse(a):
     return np.linalg.inv(a)
 
-# 需要参考Java实现来进行修改
-def normalize(a):
-    m = np.mean(a)
-    mx = max(a)
-    mn = min(a)
-    return [(float(i) - m) / (mx - mn) for i in a]
+def normalize(a, direction):
+    if direction == 0:
+        normalized_a = np.copy(a)
+        for i in range(a.shape[1]):
+            ai = a[:, i]
+            mx = max(ai, 0)
+            mn = min(ai, 0)
+            normalized_ai = np.copy(ai)
+            normalized_ai = normalized_ai - mn
+            normalized_ai = normalized_ai / (mx - mn)
+            normalized_a[:, i] = normalized_ai
+        return normalized_a
+    elif direction == 1:
+        normalized_a = np.copy(a)
+        for i in range(a.shape[0]):
+            ai = a[i, :]
+            mx = max(ai, 1)
+            mn = min(ai, 1)
+            normalized_ai = np.copy(ai)
+            normalized_ai = normalized_ai - mn
+            normalized_ai = normalized_ai / (mx - mn)
+            normalized_a[i, :] = normalized_ai
+        return normalized_a
+    else:
+        return a
 
 def unitize(a):
     unitized_a = np.copy(a)

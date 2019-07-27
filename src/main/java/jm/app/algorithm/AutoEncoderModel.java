@@ -2,7 +2,7 @@ package jm.app.algorithm;
 
 import jm.app.algebra.Matrix;
 
-public class AutoEncoder {
+public class AutoEncoderModel {
 
     private FastNeuralNetworkModel neuralNetworkModel;
 

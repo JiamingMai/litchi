@@ -9,10 +9,19 @@ public class FastNeuralNetworkModel {
     Double[][][] weights;
     Double[][] biases;
     Double[][] outputMat;
+    int batchSize = 200;
     double lambda = 0.1;
     int epoch = 10;
     final double RANDOM_COEFFIENCE = 1.0;
     ActivationFunction activationFunction = ActivationFunction.SIGMOID;
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
 
     public double getLambda() {
         return lambda;
@@ -101,7 +110,8 @@ public class FastNeuralNetworkModel {
     public void train(double[][] input, double[][] label) {
         for (int i = 0; i < epoch; i++) {
             System.out.println(String.format("Epoch #%d/%d", i+1, epoch));
-            for (int sampleNo = 0; sampleNo < input.length; sampleNo++) {
+            for (int j = 0; j < batchSize; j++) {
+                int sampleNo = (int) (Math.random() * (input.length - 1));
                 double[][] sensitivity = estSensitivity(input, label, sampleNo);
                 updateWeights(sensitivity);
                 updateBiases(sensitivity);

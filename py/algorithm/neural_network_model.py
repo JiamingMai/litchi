@@ -7,7 +7,8 @@ class NeuralNetworkModel():
     output_mat = []
 
     def __init__(self, num_of_each_layer):
-        self.epoch_num = 100000
+        self.batch_size = 200
+        self.epoch_num = 1000
         self.activation_function_type = "sigmoid"
         self.learning_rate = 0.1
         for i in range(len(num_of_each_layer) - 1):
@@ -19,12 +20,13 @@ class NeuralNetworkModel():
     def train(self, input, label):
         for i in range(self.epoch_num):
             avg_mse = 0.0
-            for sample_no in range(len(input)):
+            for j in range(self.batch_size):
+                sample_no = int(np.ceil((np.random.rand(1)*(len(input)-1))[0]))
                 sensitivity = self.est_sensitivity(input, label, sample_no)
                 self.update_weights(sensitivity)
                 self.update_biases(sensitivity)
-                avg_mse = avg_mse + self.calc_mse(input, label)
-            avg_mse = avg_mse / len(input)
+                #avg_mse = avg_mse + self.calc_mse(input, label)
+            #avg_mse = avg_mse / len(input)
             print("Epoch %d/%d, MSE: %.5f" %(i+1, self.epoch_num, avg_mse))
 
     def activation_function_for_mat(self, mat):
@@ -77,7 +79,7 @@ class NeuralNetworkModel():
         sensitivity[len(sensitivity)-1] = np.multiply(np.multiply(self.derivative_of_act_fun_for_mat(output), np.subtract(label[sample_no], output)), -2)
         for layer in range(len(sensitivity)-2, -1, -1):
             for i in range(sensitivity[layer].shape[0]):
-                sensitivity[layer][i][0] = self.derivative_of_act_fun(self.output_mat[layer+1][i][0]) * np.inner(self.weights[layer+1][:, i], sensitivity[layer+1])
+                sensitivity[layer][i][0] = self.derivative_of_act_fun(self.output_mat[layer+1][i][0]) * np.inner(self.weights[layer+1][:, i], sensitivity[layer+1][:, 0])
         return sensitivity
 
     def calc_mse(self, input, label):

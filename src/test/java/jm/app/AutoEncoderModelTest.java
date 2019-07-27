@@ -2,7 +2,7 @@ package jm.app;
 
 import jm.app.algebra.AlgebraUtil;
 import jm.app.algebra.Matrix;
-import jm.app.algorithm.AutoEncoder;
+import jm.app.algorithm.AutoEncoderModel;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class AutoEncoderTest {
+public class AutoEncoderModelTest {
 
     private Matrix[] readRecords() throws Exception {
         String rootPath = this.getClass().getResource("").getPath() + "../../";
@@ -54,9 +54,9 @@ public class AutoEncoderTest {
     }
 
     @Test
-    public void testAutoEncoder() throws Exception {
+    public void testAutoEncoderModel() throws Exception {
         Matrix[] inputs = readRecords();
-        AutoEncoder autoEncoder = new AutoEncoder();
+        AutoEncoderModel autoEncoder = new AutoEncoderModel();
         autoEncoder.train(inputs);
         Matrix[] encoded_inputs = new Matrix[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
