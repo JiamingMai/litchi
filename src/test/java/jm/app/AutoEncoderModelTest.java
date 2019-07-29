@@ -48,7 +48,7 @@ public class AutoEncoderModelTest {
         // convert the normalized matrix to array
         Matrix[] inputs = new Matrix[mat.getRowNum()];
         for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = AlgebraUtil.getRowVector(mat, i);
+            inputs[i] = AlgebraUtil.transpose(AlgebraUtil.getRowVector(mat, i));
         }
         return inputs;
     }

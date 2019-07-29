@@ -11,7 +11,7 @@ public class FastNeuralNetworkModel {
     Double[][] outputMat;
     int batchSize = 200;
     double lambda = 0.1;
-    int epoch = 10;
+    int epoch = 1000;
     final double RANDOM_COEFFIENCE = 1.0;
     ActivationFunction activationFunction = ActivationFunction.SIGMOID;
 
