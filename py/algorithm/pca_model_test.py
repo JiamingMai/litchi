@@ -15,13 +15,14 @@ def read_records():
         inputs.append(input)
     return inputs
 
-def test_auto_encoder_model():
+def test_pca_model():
     inputs = read_records()
     pca_model = pca.PcaModel()
     pca_model.train(inputs, 2)
     for i in range(len(inputs)):
         encoded_input = pca_model.encode(inputs[i])
         print(encoded_input)
+        print()
 
 if __name__ == "__main__":
-    test_auto_encoder_model()
+    test_pca_model()
