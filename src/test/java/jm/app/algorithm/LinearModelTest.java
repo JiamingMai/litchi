@@ -1,4 +1,4 @@
-package jm.app;
+package jm.app.algorithm;
 
 import jm.app.algebra.Matrix;
 import jm.app.algorithm.LinearModel;

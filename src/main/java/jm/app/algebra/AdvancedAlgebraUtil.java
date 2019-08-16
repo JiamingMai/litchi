@@ -104,10 +104,6 @@ public class AdvancedAlgebraUtil {
             System.out.println("Error: the row number of the matrix must be the same with the column number of the matrix.");
             return null;
         }
-        if (mat.getRowNum() > 10) {
-            System.out.println("Error: the matrix is too large to be calculated.");
-            return null;
-        }
         PrimitiveMatrix primitiveMatrix = convert(mat);
         return primitiveMatrix.getDeterminant().toBigDecimal();
     }

@@ -1,8 +1,8 @@
-package jm.app;
+package jm.app.algorithm;
 
 import jm.app.algebra.AlgebraUtil;
 import jm.app.algebra.Matrix;
-import jm.app.algorithm.PcaModel;
+import jm.app.algorithm.AutoEncoderModel;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class PcaModelTest {
+public class AutoEncoderModelTest {
 
     private Matrix[] readRecords() throws Exception {
-        String rootPath = this.getClass().getResource("").getPath() + "../../";
+        String rootPath = this.getClass().getResource("").getPath() + "../../../";
         String fileName = "cc_general.csv";
         Scanner scanner = new Scanner(new File(rootPath, fileName));
         // skip the first line (the header)
@@ -54,13 +54,15 @@ public class PcaModelTest {
     }
 
     @Test
-    public void testPcaModel() throws Exception {
-        Matrix[] samples = readRecords();
-        PcaModel pcaModel = new PcaModel();
-        pcaModel.train(samples, 2);
-        for (Matrix x : samples) {
-            Matrix z = pcaModel.encode(x);
-            System.out.println(z);
+    public void testAutoEncoderModel() throws Exception {
+        Matrix[] inputs = readRecords();
+        AutoEncoderModel autoEncoder = new AutoEncoderModel();
+        autoEncoder.train(inputs);
+        Matrix[] encoded_inputs = new Matrix[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            Matrix encoded_input = autoEncoder.encode(inputs[i]);
+            encoded_inputs[i] = encoded_input;
+            System.out.println(encoded_input);
         }
     }
 
