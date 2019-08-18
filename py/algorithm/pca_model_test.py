@@ -4,8 +4,10 @@ import py.algorithm.pca_model as pca
 import py.algebra.albebra_util as au
 
 def read_records():
-    file_path = os.getcwd() + "/../../src/main/resources/cc_general_pended.csv"
-    x = np.loadtxt(file_path, delimiter=",", skiprows=(1), usecols=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17), unpack=True)
+    #file_path = os.getcwd() + "/../../src/main/resources/cc_general_pended.csv"
+    #x = np.loadtxt(file_path, delimiter=",", skiprows=(1), usecols=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17), unpack=True)
+    file_path = os.getcwd() + "/../../src/main/resources/city.csv"
+    x = np.loadtxt(file_path, delimiter=",", skiprows=(1), usecols=(1, 2, 3), unpack=True)
     x = np.transpose(x)
     x = au.normalize(x, 0)
     inputs = []

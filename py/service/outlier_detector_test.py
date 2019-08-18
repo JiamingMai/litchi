@@ -17,7 +17,8 @@ def test_detect_outlier():
     inputs = read_records()
     outlier_detector = detector.OutlierDetector()
     outputs = outlier_detector.detect_outlier(inputs)
-    print(outputs)
+    for output in outputs:
+        print(output)
 
 if __name__ == "__main__":
     test_detect_outlier()
