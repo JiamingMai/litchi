@@ -9,9 +9,10 @@ public interface Optimizer {
      * @param fun the original target function
      * @param params the parameters to be optimized
      * @param args the arguments of the target function
+     * @param toWrapRmseFunction if this parameter is true, then the memthod should wrap the target function with RMSE loss function
      * @return
      */
-    Matrix optimize(TargetFunction fun, Matrix params, Matrix args);
+    Matrix optimize(TargetFunction fun, Matrix params, Matrix args, boolean toWrapRmseFunction);
 
     /**
      * This method is used for supervised learning
@@ -19,8 +20,9 @@ public interface Optimizer {
      * @param params the parameters to be optimized
      * @param trainInput the input training samples
      * @param truthOutput the labels of the training samples
+     * @param toWrapRmseFunction if this parameter is true, then the memthod should wrap the target function with RMSE loss function
      * @return
      */
-    Matrix optimize(TargetFunction fun, Matrix params, Matrix trainInput, Matrix truthOutput);
+    Matrix optimize(TargetFunction fun, Matrix params, Matrix trainInput, Matrix truthOutput, boolean toWrapRmseFunction);
 
 }

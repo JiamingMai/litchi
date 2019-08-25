@@ -37,7 +37,7 @@ public class SteepestDescentOptimizerTest {
                 BigDecimal res = a.multiply(x).add(b);
                 return res;
             }
-        }, params, trainInput, truthOutput);
+        }, params, trainInput, truthOutput, true);
         final BigDecimal error = new BigDecimal(0.001);
         Assertions.assertTrue(optimizedParams.getValue(0, 0).subtract(new BigDecimal(2.0)).abs().
                 subtract(error).compareTo(new BigDecimal(0.0)) < 0);

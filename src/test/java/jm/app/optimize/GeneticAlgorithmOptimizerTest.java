@@ -49,7 +49,7 @@ public class GeneticAlgorithmOptimizerTest {
                 BigDecimal res = a.multiply(x).add(b);
                 return res;
             }
-        }, params, trainInput, truthOutput);
+        }, params, trainInput, truthOutput, true);
         System.out.println(optimizedParams);
         final BigDecimal error = new BigDecimal(0.01);
         Assertions.assertTrue(optimizedParams.getValue(0, 0).subtract(new BigDecimal(2.0)).abs().

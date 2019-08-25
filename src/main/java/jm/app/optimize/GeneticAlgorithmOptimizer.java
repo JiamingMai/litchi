@@ -31,13 +31,15 @@ public class GeneticAlgorithmOptimizer implements Optimizer {
     }
 
     @Override
-    public Matrix optimize(TargetFunction fun, Matrix params, Matrix args) {
+    public Matrix optimize(TargetFunction fun, Matrix params, Matrix args, boolean toWrapRmseFunction) {
         return null;
     }
 
     @Override
-    public Matrix optimize(TargetFunction fun, Matrix params, Matrix trainInput, Matrix truthOutput) {
-        RmseFunction rmseFunction = new RmseFunction(fun);
+    public Matrix optimize(TargetFunction targetFunction, Matrix params, Matrix trainInput, Matrix truthOutput, boolean toWrapRmseFunction) {
+        if (toWrapRmseFunction) {
+            targetFunction = new RmseFunction(targetFunction);
+        }
         Matrix args = AlgebraUtil.mergeMatrix(trainInput, truthOutput, 1);
         Random random = new Random();
         int paramsNum = params.getColNum();
@@ -59,7 +61,7 @@ public class GeneticAlgorithmOptimizer implements Optimizer {
             // Step 2. Record the best parameters
             for (int j = 0; j < SEED_NUM; j++) {
                 Matrix denormalizedParams = denormalizeParams(AlgebraUtil.getRowVector(paramsPopulation, j));
-                BigDecimal rmse = rmseFunction.fun(denormalizedParams, args);
+                BigDecimal rmse = targetFunction.fun(denormalizedParams, args);
                 if (rmse.compareTo(minRmse) < 0) {
                     minRmse = rmse;
                     for (int k = 0; k < paramsNum; k++) {
@@ -70,7 +72,7 @@ public class GeneticAlgorithmOptimizer implements Optimizer {
             }
 
             // Step 3. Execute the selection operator
-            paramsPopulation = selectionOperator(rmseFunction, paramsPopulation, args);
+            paramsPopulation = selectionOperator(targetFunction, paramsPopulation, args);
 
             // Step 4. Execute the crossover operator
             paramsPopulation = crossoverOperator(paramsPopulation);

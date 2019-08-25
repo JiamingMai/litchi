@@ -20,19 +20,21 @@ public class SteepestDescentOptimizer implements Optimizer {
     }
 
     @Override
-    public Matrix optimize(TargetFunction fun, Matrix params, Matrix args) {
+    public Matrix optimize(TargetFunction fun, Matrix params, Matrix args, boolean toWrapRmseFunction) {
         return null;
     }
 
     @Override
-    public Matrix optimize(TargetFunction targetFunction, Matrix params, Matrix trainInput, Matrix truthOutput) {
-        RmseFunction rmseFunction = new RmseFunction(targetFunction);
+    public Matrix optimize(TargetFunction targetFunction, Matrix params, Matrix trainInput, Matrix truthOutput, boolean toWrapRmseFunction) {
+        if (toWrapRmseFunction) {
+            targetFunction = new RmseFunction(targetFunction);
+        }
         Matrix args = AlgebraUtil.mergeMatrix(trainInput, truthOutput, 1);
         Matrix lastParams = AlgebraUtil.copy(params);
         Matrix newParams = AlgebraUtil.copy(params);
         for (int e = 0; e < epochNum; e++) {
             for (int i = 0; i < newParams.getColNum(); i++) {
-                BigDecimal partialDerivative = calcPartialDerivative(rmseFunction, lastParams, i, args);
+                BigDecimal partialDerivative = calcPartialDerivative(targetFunction, lastParams, i, args);
                 BigDecimal param = newParams.getValue(0, i).subtract(learningRate.multiply(partialDerivative));
                 newParams.setValue(0, i, param);
             }
