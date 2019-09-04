@@ -28,7 +28,7 @@ public class HoltWintersModel {
         // initialize parameters that are going to be optimized
         Matrix params = new Matrix(1, 3);
         for (int i = 0; i < params.getRowNum(); i++) {
-            params.setValue(0, 1, 0.001);
+            params.setValue(i, 0, 0.001);
         }
         params = optimizer.optimize(new HoltWintersModelRmseTargetFunction(cycleLen), params, y, y, false);
         return params;
