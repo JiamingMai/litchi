@@ -23,15 +23,16 @@ class SteepestDescentOptimizer(opt.Optimizer):
         partial_derivative = np.multiply(left_derivative + right_derivative, 0.5)
         return partial_derivative
 
-    def optimize(self, target_function, params, train_input, truth_output):
-        rmse_function = rf.RmseFunction(target_function)
+    def optimize(self, target_function, params, train_input, truth_output, to_wrap_rmse_function=True):
+        if to_wrap_rmse_function == True:
+            target_function = rf.RmseFunction(target_function)
         args = np.concatenate((train_input, truth_output), 1)
         last_params = np.array(params)
         new_params = np.array(params)
         for e in range(self.epoch_num):
             print("Epoch #%d" %e, new_params)
             for i in range(new_params.shape[0]):
-                partial_derivative = self.calc_partial_derivative(rmse_function, last_params, i, args)
+                partial_derivative = self.calc_partial_derivative(target_function, last_params, i, args)
                 param = np.subtract(new_params[i], self.learning_rate * partial_derivative)
                 new_params[i] = param
             last_params = np.array(new_params)

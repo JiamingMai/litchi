@@ -1,5 +1,5 @@
 import py.optimize.rmse_function as rf
-import py.optimize as opt
+import py.optimize.optimizer as opt
 import numpy as np
 import sys
 
@@ -111,10 +111,11 @@ class GeneticAlgorithmOptimizer(opt.Optimizer):
                     params_population[i, j] = np.random.rand()
         return params_population
 
-    def optimize(self, target_function, params, train_input, truth_output):
-        rmse_function = rf.RmseFunction(target_function)
+    def optimize(self, target_function, params, train_input, truth_output, to_wrap_rmse_function=True):
+        if to_wrap_rmse_function == True:
+            target_function = rf.RmseFunction(target_function)
         args = np.concatenate((train_input, truth_output), 1)
-        params_num = params.shape[0]
+        params_num = params.shape[1]
         # Step 1. Initialize population
         params_population = np.random.rand(self.seed_num, params_num)
         # start optimizing
@@ -125,13 +126,13 @@ class GeneticAlgorithmOptimizer(opt.Optimizer):
             # Step 2. Record the best parameters
             for j in range(self.seed_num):
                 denormalized_params = self.denormalize_params(params_population[j, :])
-                rmse = rmse_function.fun(denormalized_params, args)
+                rmse = target_function.fun(denormalized_params, args)
                 if rmse < min_rmse:
                     min_rmse = rmse
                     best_params = np.array(params_population[j, :])
 
             # Step 3. Execute the selection operator
-            params_population = self.selection_operator(rmse_function, params_population, args)
+            params_population = self.selection_operator(target_function, params_population, args)
 
             # Step 4. Execute the crossover operator
             params_population = self.crossover_operator(params_population)

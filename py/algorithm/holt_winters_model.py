@@ -14,13 +14,13 @@ class HoltWintersModel():
         params = np.zeros((1, 3))
         for i in range(params.shape[0]):
             params[i][0] = 0.001
-        params = optimizer.optimize(self, hwrf.HoltWintersRmseFunction(cycle_len), params, y, y)
+        params = optimizer.optimize(hwrf.HoltWintersRmseFunction(cycle_len), params, y, y, False)
         return params
 
     def fittedValue(self, y, params, cycle_len, prediction_len):
-        alpha = params[0][0]
-        beta = params[0][1]
-        gama = params[0][2]
+        alpha = params[0]
+        beta = params[1]
+        gama = params[2]
         s = []
         b = []
         c = []
@@ -41,7 +41,7 @@ class HoltWintersModel():
         b.append(b0)
 
         # Initialize c
-        for i in range(self.cycle_len):
+        for i in range(cycle_len):
             ci = y[i][0] - s[0]
             c.append(ci)
 
