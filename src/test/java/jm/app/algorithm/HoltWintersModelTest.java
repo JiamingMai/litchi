@@ -31,7 +31,7 @@ public class HoltWintersModelTest {
 
         long startTimestamp = System.currentTimeMillis();
         HoltWintersModel holtWintersModel = new HoltWintersModel();
-        Matrix bestParams = holtWintersModel.optimize(y, new BigDecimal(cycleLen), 20);
+        Matrix bestParams = holtWintersModel.optimize(y, cycleLen, 20);
         System.out.println(bestParams);
         long endTimestamp = System.currentTimeMillis();
         System.out.println((endTimestamp - startTimestamp) + " ms");
