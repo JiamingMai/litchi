@@ -12,7 +12,7 @@ import java.util.List;
 
 public class HoltWintersModel {
 
-    private final int DEFAULT_EPOCH_NUM = 10000;
+    private final int DEFAULT_EPOCH_NUM = 20;
 
     public Matrix optimize(Matrix y, int cycleLen) {
         return optimize(y, cycleLen, DEFAULT_EPOCH_NUM);
