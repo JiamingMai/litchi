@@ -43,4 +43,9 @@ public class PolynomialModel implements BasicModel {
         Matrix y = linearModel.calcValue(newX, params);
         return y;
     }
+
+    @Override
+    public String toString() {
+        return "Polynomial Model";
+    }
 }

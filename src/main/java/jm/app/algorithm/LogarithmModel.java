@@ -33,4 +33,9 @@ public class LogarithmModel implements BasicModel {
         LinearModel linearModel = new LinearModel();
         return linearModel.calcValue(lnx, params);
     }
+
+    @Override
+    public String toString() {
+        return "Logarithm Model";
+    }
 }

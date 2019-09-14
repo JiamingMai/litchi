@@ -1,21 +1,18 @@
 package jm.app.service;
 
-import jm.app.algebra.AlgebraUtil;
-import jm.app.algebra.Matrix;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
-public class OutlierDetectorTest {
+public class OutlierDetectionServiceTest2 {
 
     private Map<String, Double[]> readRecords() throws Exception {
         String rootPath = this.getClass().getResource("").getPath() + "../../../";
-        String fileName = "cc_general.csv";
+        String fileName = "cluster_test_data.csv";
         Scanner scanner = new Scanner(new File(rootPath, fileName));
-        // skip the first line (the header)
-        scanner.nextLine();
         Map<String, Double[]> data = new HashMap<>();
         int number = 1;
         while (scanner.hasNextLine()) {
@@ -41,8 +38,8 @@ public class OutlierDetectorTest {
     @Test
     public void testDetectOutlier() throws Exception {
         Map<String, Double[]> data = readRecords();
-        OutlierDetector outlierDetector = new OutlierDetector();
-        Map<String, Double[]> outliers = outlierDetector.detectOutlier(data);
+        OutlierDetectionService outlierDetectionService = new OutlierDetectionService();
+        Map<String, Double[]> outliers = outlierDetectionService.detectOutlier(data);
         System.out.println("Total Number of Outliers: " + outliers.size());
         for (Map.Entry<String, Double[]> entry : outliers.entrySet()) {
             System.out.println(entry);

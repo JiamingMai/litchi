@@ -58,4 +58,9 @@ public class PowerModel implements BasicModel {
         }
         return y;
     }
+
+    @Override
+    public String toString() {
+        return "Power Model";
+    }
 }

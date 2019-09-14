@@ -44,4 +44,9 @@ public class ExponentialModel implements BasicModel {
         }
         return y;
     }
+
+    @Override
+    public String toString() {
+        return "Exponential Model";
+    }
 }

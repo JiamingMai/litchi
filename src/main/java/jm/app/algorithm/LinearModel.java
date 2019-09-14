@@ -36,4 +36,9 @@ public class LinearModel implements BasicModel {
         }
         return newX;
     }
+
+    @Override
+    public String toString() {
+        return "Linear Model";
+    }
 }

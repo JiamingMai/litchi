@@ -6,7 +6,7 @@ import jm.app.algorithm.HoltWintersModel;
 
 import java.util.List;
 
-public class AnomalyDetector {
+public class AnomalyDetectionService {
 
     private HoltWintersModel holtWintersModel = new HoltWintersModel();
 

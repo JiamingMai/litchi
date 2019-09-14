@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class OutlierDetector {
+public class OutlierDetectionService {
 
     private GmmModel gmmModel = new GmmModel();
 
