@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import py.service.outlier_detector as detector
+import py.service.outlier_detection_service as detector
 import py.algebra.albebra_util as au
 
 def read_records():
@@ -15,8 +15,8 @@ def read_records():
 
 def test_detect_outlier():
     inputs = read_records()
-    outlier_detector = detector.OutlierDetector()
-    outputs = outlier_detector.detect_outlier(inputs)
+    outlier_detection_service = detector.OutlierDetectionService()
+    outputs = outlier_detection_service.detect_outlier(inputs)
     for output in outputs:
         print(output)
 

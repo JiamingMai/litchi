@@ -2,7 +2,7 @@ import numpy as np
 import py.algebra.albebra_util as au
 import py.algorithm.holt_winters_model as hwm
 
-class AnomalyDetector():
+class AnomalyDetionService():
 
     def __init__(self):
         self.epoch_num = 20

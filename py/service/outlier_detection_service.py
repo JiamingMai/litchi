@@ -3,7 +3,7 @@ import py.algorithm.gmm_model as gmm_model
 import py.algorithm.pca_model as pca
 import py.algebra.albebra_util as au
 
-class OutlierDetector():
+class OutlierDetectionService():
 
     def __init__(self):
         self.max_feature_num = 2
