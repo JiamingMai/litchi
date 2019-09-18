@@ -1,5 +1,3 @@
-import numpy as np
-
 import py.service.trend_line_service as tls
 import py.service.trend_line_enum as tle
 
