@@ -16,7 +16,7 @@ public class GmmModelTest {
 
     @Test
     public void testCluster() throws IOException {
-        String rootPath = this.getClass().getResource("").getPath() + "../../";
+        String rootPath = this.getClass().getResource("").getPath() + "../../../";
         String fileName = "cluster_test_data.csv";
         Scanner scanner = new Scanner(new File(rootPath, fileName));
         Matrix x = new Matrix(259, 2);
