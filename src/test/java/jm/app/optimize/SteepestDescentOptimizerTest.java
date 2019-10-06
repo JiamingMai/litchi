@@ -45,6 +45,10 @@ public class SteepestDescentOptimizerTest {
                 subtract(error).compareTo(new BigDecimal(0.0)) < 0);
     }
 
+    /**
+     * F(X) = a1*x1^2 + a2*x2, 其中a = 1, b = 2.
+     * 计算x1 = 4，x2 = 3时F(X)关于a的偏导数
+     */
     @Test
     public void testCalcPartialDerivative() {
         Matrix params = new Matrix(1, 2);
