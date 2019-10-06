@@ -431,7 +431,7 @@ public class AlgebraUtil {
             return minMat;
         } else if (direction == 1) {
             Matrix minMat = new Matrix(x.getRowNum(), 1);
-            for (int r = 0; r < x.getColNum(); r++) {
+            for (int r = 0; r < x.getRowNum(); r++) {
                 BigDecimal minValue = x.getValue(r, 0);
                 for (int c = 0; c < x.getColNum(); c++) {
                     BigDecimal value = x.getValue(r, c);
