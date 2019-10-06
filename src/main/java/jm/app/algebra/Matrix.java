@@ -53,6 +53,7 @@ public class Matrix {
             for (int j = 0; j < colNum; j++) {
                 sb.append(String.format("%15f", mat[i][j].doubleValue()));
             }
+            sb.append("\n");
         }
         return sb.toString();
     }
