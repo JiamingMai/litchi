@@ -31,7 +31,8 @@ public class GeneticAlgorithmOptimizer implements Optimizer {
     }
 
     @Override
-    public Matrix optimize(TargetFunction fun, Matrix params, Matrix args, boolean toWrapRmseFunction) {
+    public Matrix optimize(TargetFunction fun, Matrix params, Matrix args) {
+        // TODO: implement the abstract method here
         return null;
     }
 

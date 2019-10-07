@@ -20,8 +20,18 @@ public class SteepestDescentOptimizer implements Optimizer {
     }
 
     @Override
-    public Matrix optimize(TargetFunction fun, Matrix params, Matrix args, boolean toWrapRmseFunction) {
-        return null;
+    public Matrix optimize(TargetFunction targetFunction, Matrix params, Matrix args) {
+        Matrix lastParams = AlgebraUtil.copy(params);
+        Matrix newParams = AlgebraUtil.copy(params);
+        for (int e = 0; e < epochNum; e++) {
+            for (int i = 0; i < newParams.getColNum(); i++) {
+                BigDecimal partialDerivative = calcPartialDerivative(targetFunction, lastParams, i, args);
+                BigDecimal param = newParams.getValue(0, i).subtract(learningRate.multiply(partialDerivative));
+                newParams.setValue(0, i, param);
+            }
+            lastParams = AlgebraUtil.copy(newParams);
+        }
+        return newParams;
     }
 
     @Override
@@ -67,5 +77,21 @@ public class SteepestDescentOptimizer implements Optimizer {
         BigDecimal rightDerivative = targetFunction.fun(rightOffsetParams, args).subtract(fx).multiply(new BigDecimal(1.0 / epsilon.doubleValue()));
         BigDecimal partialDerivative = leftDerivative.add(rightDerivative).multiply(new BigDecimal(0.5));
         return partialDerivative;
+    }
+
+    public int getEpochNum() {
+        return epochNum;
+    }
+
+    public void setEpochNum(int epochNum) {
+        this.epochNum = epochNum;
+    }
+
+    public BigDecimal getLearningRate() {
+        return learningRate;
+    }
+
+    public void setLearningRate(BigDecimal learningRate) {
+        this.learningRate = learningRate;
     }
 }
