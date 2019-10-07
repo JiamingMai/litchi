@@ -6,9 +6,20 @@ public class AutoEncoderModel {
 
     private FastNeuralNetworkModel neuralNetworkModel;
 
+    private Integer compressedDimension;
+
+    public AutoEncoderModel() {
+    }
+
+    public AutoEncoderModel(int compressedDimension) {
+        this.compressedDimension = compressedDimension;
+    }
+
     public void train(Matrix[] samples) {
         int dimension = samples[0].getRowNum();
-        int compressedDimension = dimension / 2 > 0 ? dimension / 2 : 1;
+        if (null == compressedDimension) {
+            compressedDimension = dimension / 2 > 0 ? dimension / 2 : 1;
+        }
         neuralNetworkModel = new FastNeuralNetworkModel(dimension, compressedDimension, dimension);
         neuralNetworkModel.train(samples, samples);
     }
@@ -20,4 +31,11 @@ public class AutoEncoderModel {
         return output;
     }
 
+    public Integer getCompressedDimension() {
+        return compressedDimension;
+    }
+
+    public void setCompressedDimension(Integer compressedDimension) {
+        this.compressedDimension = compressedDimension;
+    }
 }

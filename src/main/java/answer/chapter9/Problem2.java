@@ -3,7 +3,6 @@ package answer.chapter9;
 import jm.app.algebra.AdvancedAlgebraUtil;
 import jm.app.algebra.Matrix;
 import jm.app.algorithm.GmmModel;
-import sun.tools.jstat.Literal;
 
 import java.math.BigDecimal;
 import java.util.*;
