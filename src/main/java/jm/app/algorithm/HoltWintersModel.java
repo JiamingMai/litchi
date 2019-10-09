@@ -103,7 +103,7 @@ public class HoltWintersModel {
         return yHat;
     }
 
-    class HoltWintersModelRmseTargetFunction implements TargetFunction {
+    public class HoltWintersModelRmseTargetFunction implements TargetFunction {
 
         private int cycleLen;
 

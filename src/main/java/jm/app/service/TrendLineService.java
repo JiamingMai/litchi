@@ -45,7 +45,7 @@ public class TrendLineService {
         return trendLineValues;
     }
 
-    private BasicModel selectBestModel(Matrix x, Matrix y) {
+    protected BasicModel selectBestModel(Matrix x, Matrix y) {
         List<BasicModel> models = new ArrayList<>();
         models.add(new LinearModel());
         models.add(new LogarithmModel());
@@ -76,7 +76,7 @@ public class TrendLineService {
         return rmse;
     }
 
-    private Matrix[] wrapMatrices(List<Double> values) {
+    protected Matrix[] wrapMatrices(List<Double> values) {
         Matrix x = new Matrix(values.size(), 1);
         for (int i = 0; i < x.getRowNum(); i++) {
             x.setValue(i, 0, i + 1);
@@ -91,7 +91,7 @@ public class TrendLineService {
         return inputXAndY;
     }
 
-    private List<Double> unwrapMatrix(Matrix yHat) {
+    protected List<Double> unwrapMatrix(Matrix yHat) {
         List<Double> trendLineValues = new ArrayList<>();
         for (int i = 0; i < yHat.getRowNum(); i++) {
             trendLineValues.add(yHat.getValue(i, 0).doubleValue());
