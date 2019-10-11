@@ -7,7 +7,8 @@ public enum TrendLineEnum {
     LOGARITHM("logarithm", 2),
     EXPONENTIAL("exponential", 3),
     POLYNOMIAL("polynomial", 4),
-    POWER("power", 5);
+    POWER("power", 5),
+    MOVING_AVERAGE("movingAverage", 6);
 
     private String name;
     private int code;
