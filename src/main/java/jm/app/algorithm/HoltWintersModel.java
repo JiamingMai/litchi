@@ -45,7 +45,7 @@ public class HoltWintersModel {
         return yHatMat;
     }
 
-    private List<BigDecimal> estimateYHat(Matrix y, Matrix params, int cycleLen, int predictionLen) {
+    protected List<BigDecimal> estimateYHat(Matrix y, Matrix params, int cycleLen, int predictionLen) {
         BigDecimal alpha = params.getValue(0, 0);
         BigDecimal beta = params.getValue(0, 1);
         BigDecimal gama = params.getValue(0, 2);

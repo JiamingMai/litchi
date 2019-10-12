@@ -59,6 +59,7 @@ public class Problem4 {
     public static BigDecimal calcRmse(BasicModel model, Matrix x, Matrix y, Matrix params) {
         Matrix yHat = model.calcValue(x, params);
         BigDecimal rmse = AlgebraUtil.l2Norm(AlgebraUtil.subtract(yHat, y));
+        rmse = new BigDecimal(Math.sqrt(rmse.pow(2).doubleValue() / yHat.getRowNum()));
         return rmse;
     }
 

@@ -1,3 +1,4 @@
+import os
 import numpy as np
 
 
@@ -40,18 +41,26 @@ def cluster(x, k, epoch_num):
 
 def cluster_with_u_and_sigma(x, k, u, sigma):
     x_classes = {}
+    x_classes_probability = {}
     for s in range(k):
         x_classes[s] = []
     for j in range(x.shape[0]):
         max_probability = -1
         best_class = -1
+        x_classes_probability[j] = []
+        sum = 0.0
         for s in range(k):
             pjs = gaussian_fun(x[j], u[s], sigma[s])
+            sum = sum + pjs
             if (pjs > max_probability):
                 max_probability = pjs
                 best_class = s
+        for s in range(k):
+            pjs = gaussian_fun(x[j], u[s], sigma[s])
+            pjs = pjs / sum
+            x_classes_probability[j].append(pjs)
         x_classes[best_class].append(j)
-    return x_classes
+    return x_classes, x_classes_probability
 
 
 def gaussian_fun(x, u, sigma):
@@ -60,3 +69,17 @@ def gaussian_fun(x, u, sigma):
     right_term = np.exp(-0.5 * np.dot(np.dot(np.transpose(x - u), np.linalg.inv(sigma)), x - u))
     p = left_term * right_term
     return p
+
+def test_gmm_model():
+    file_path = os.getcwd() + "/../../../src/main/resources/cluster_test_data.csv"
+    x = np.loadtxt(file_path, delimiter=",",usecols=(1, 2), unpack=True)
+    x = np.transpose(x)
+    k = 3
+    epoch_num = 50
+    u, sigma = cluster(x, k, epoch_num)
+    x_classes, x_classes_probability = cluster_with_u_and_sigma(x, k, u, sigma)
+    print(x_classes_probability)
+
+
+if __name__ == "__main__":
+    test_gmm_model()

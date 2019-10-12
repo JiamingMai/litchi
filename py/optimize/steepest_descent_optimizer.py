@@ -1,5 +1,5 @@
 import py.optimize.rmse_function as rf
-import py.optimize as opt
+import py.optimize.optimizer as opt
 import numpy as np
 
 class SteepestDescentOptimizer(opt.Optimizer):
