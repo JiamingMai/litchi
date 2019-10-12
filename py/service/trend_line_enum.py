@@ -7,3 +7,4 @@ class TrendLineEnum(Enum):
     EXPONENTIAL = 3
     POLYNOMIAL = 4
     POWER = 5
+    MOVING_AVERAGE = 6
