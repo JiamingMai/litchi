@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 // 4, 8, 9, 8, 7, 12, 6, 10, 6, 9
 // 9, 20, 22, 15, 17, 23, 18, 25, 10, 20
-public class Problem3 {
+public class Problem7_3 {
 
     public static void main(String[] args) {
         Matrix x = new Matrix(10, 1);

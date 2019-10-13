@@ -9,7 +9,7 @@ import jm.app.optimize.TargetFunction;
 
 import java.math.BigDecimal;
 
-public class Problem2 {
+public class Problem7_2 {
 
     class SteepestDecentLinearModel implements BasicModel {
 

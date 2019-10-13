@@ -6,7 +6,7 @@ import jm.app.optimize.BasicModel;
 
 import java.math.BigDecimal;
 
-public class Problem1 {
+public class Problem7_1 {
 
     private static Matrix[] init() {
         Matrix x = new Matrix(10, 1);

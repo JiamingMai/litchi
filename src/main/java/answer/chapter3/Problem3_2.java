@@ -7,7 +7,7 @@ import jm.app.algebra.Matrix;
  * 设A=[6, 7, 1; 2, 2, 4]，B=[8, 1, 3; 4, 4, 1]，
  * 尝试利用本章给出的矩阵点乘的实现来计算A和B点乘的结果。
  */
-public class Problem2 {
+public class Problem3_2 {
 
     public static void main(String[] args) {
         Matrix a = new Matrix(2, 3);

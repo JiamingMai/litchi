@@ -15,7 +15,7 @@ import java.math.BigDecimal;
  * 思路：将F(X;A)转换为关于A的函数F(A;X)=x1^3*a1+x2^2*a2+x3*a3+x4*a4之后再计算,
  * 其中a1=4, a2=2, a3=3, a4=1，此时params是X, args是A
  */
-public class Problem1 {
+public class Problem5_1 {
 
     static class MyTargetFunction implements TargetFunction {
         @Override

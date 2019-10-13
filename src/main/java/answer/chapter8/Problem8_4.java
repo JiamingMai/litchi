@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  * 参考8.3节的抑或运算器的示例，尝试使用8.2节中的多层神经网络模型，
  * 分别编写训练与运算器以及训练或运算器的示例。
  */
-public class Problem4 {
+public class Problem8_4 {
 
     public static void trainAndOperator() {
         Matrix[] input = new Matrix[4];

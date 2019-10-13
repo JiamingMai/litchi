@@ -8,7 +8,7 @@ import jm.app.service.TrendLineService;
 
 import java.util.List;
 
-public class Problem2 {
+public class Problem14_2 {
 
     class ExtendedTrendLineService extends TrendLineService {
 

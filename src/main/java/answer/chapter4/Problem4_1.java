@@ -7,7 +7,7 @@ import jm.app.algebra.Matrix;
  * 设A=[6, 7, 1; 2, 2, 4]，
  * 尝试利用本章给出的最大值函数和最小值函数分别计算A每行的最大值和最小值。
  */
-public class Problem1 {
+public class Problem4_1 {
 
     public static void main(String[] args) {
         Matrix a = new Matrix(2, 3);

@@ -8,7 +8,7 @@ import jm.app.algebra.Matrix;
  * 设A=[5, 2, 0; 2, 8, 3; 4 9 7],
  * 尝试利用本章给出的矩阵特征值和特征向量函数来计算A的所有特征值及其对应的特征向量。
  */
-public class Problem2 {
+public class Problem4_2 {
 
     public static void main(String[] args) {
         Matrix a = new Matrix(3, 3);

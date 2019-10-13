@@ -5,7 +5,6 @@ import jm.app.algebra.AlgebraUtil;
 import jm.app.algebra.Matrix;
 import jm.app.algorithm.AutoEncoderModel;
 import jm.app.algorithm.GmmModel;
-import jm.app.algorithm.PcaModel;
 import jm.app.service.OutlierDetectionService;
 
 import java.math.BigDecimal;
@@ -13,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Problem1 {
+public class Problem13_1 {
 
     class AutoEncoderOutlierDetectionService extends OutlierDetectionService {
         private GmmModel gmmModel = new GmmModel();

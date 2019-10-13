@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Problem4 {
+public class Problem12_4 {
 
     class ImprovedHoltWinterModel extends HoltWintersModel {
 

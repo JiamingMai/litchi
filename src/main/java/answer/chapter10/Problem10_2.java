@@ -8,7 +8,7 @@ import jm.app.optimize.SteepestDescentOptimizer;
 
 import java.math.BigDecimal;
 
-public class Problem2 {
+public class Problem10_2 {
 
     class ExtendedHoltWintersModel extends HoltWintersModel {
         @Override

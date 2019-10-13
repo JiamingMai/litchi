@@ -4,10 +4,11 @@ import jm.app.algebra.AlgebraUtil;
 import jm.app.algebra.Matrix;
 
 /**
- * 设A=[6, 7, 1; 2, 2, 4]，B=[8, 1, 3; 4, 4, 1]
- * 尝试利用本章给出的矩阵加法和减法的实现来计算A+B和A-B的结果。
+ * 设A=[6, 7, 1; 2, 2, 4]，B=[8, 1, 3; 4, 4, 1]，
+ * 尝试利用本章给出的矩阵合并的实现来合并矩阵A和B，
+ * 得到C=[6, 7, 1; 2, 2, 4; 8, 1, 3; 4, 4, 1]。
  */
-public class Problem1 {
+public class Problem3_3 {
 
     public static void main(String[] args) {
         Matrix a = new Matrix(2, 3);
@@ -24,10 +25,8 @@ public class Problem1 {
         b.setValue(1, 0, 4);
         b.setValue(1, 1, 4);
         b.setValue(1, 2, 1);
-        Matrix aAddB = AlgebraUtil.add(a, b);
-        Matrix aSubB = AlgebraUtil.subtract(a, b);
-        System.out.println(aAddB);
-        System.out.println(aSubB);
+        Matrix c = AlgebraUtil.mergeMatrix(a, b, 0);
+        System.out.println(c);
     }
 
 }

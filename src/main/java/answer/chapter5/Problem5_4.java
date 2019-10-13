@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 /**
  * 利用SteepestDescentOpitmizer编写程序求出5x1-2x2+3x3-6x4=0的一个可行解。
  */
-public class Problem4 {
+public class Problem5_4 {
 
     static class MyTargetFunction implements TargetFunction {
         @Override

@@ -13,7 +13,7 @@ import java.util.*;
  * 利用GMM模型输出每个数据属于每个类别的概率，返回类型表示一个map，map的key是数据的索引，
  * value是一个List，List的大小等于k，List的第i元素是这个数据属于每i类别的概率。
  */
-public class Problem2 {
+public class Problem9_2 {
 
     class ExtendedGmmModel extends GmmModel {
 
