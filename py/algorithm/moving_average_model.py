@@ -1,5 +1,3 @@
-import numpy as np
-
 default_windows_size = 3
 
 def optimize(x, y):
